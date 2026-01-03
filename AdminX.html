@@ -360,7 +360,7 @@
       <h2>⛔ Access Denied</h2>
       <p>Admin privileges required to access this page.</p>
       <div style="display: flex; gap: 15px; margin-top: 20px;">
-        <button onclick="window.location.href='LandX.html'" class="btn-primary">
+        <button onclick="window.location.href='index.html'" class="btn-primary">
           Go to Login
         </button>
         <button onclick="window.location.href='Xcode.html'" class="btn-outline">
@@ -2517,7 +2517,7 @@
         localStorage.clear();
         alert('All data cleared! Redirecting to login...');
         setTimeout(() => {
-          window.location.href = 'LandX.html';
+          window.location.href = 'index.html';
         }, 1000);
       }
     }
@@ -2677,7 +2677,7 @@
       document.getElementById('logoutBtn').addEventListener('click', function() {
         if (confirm('Logout from admin panel?')) {
           localStorage.removeItem('codex_session_start');
-          window.location.href = 'LandX.html';
+          window.location.href = 'index.html';
         }
       });
       
@@ -2719,4 +2719,5 @@
     });
   </script>
 </body>
+
 </html>
