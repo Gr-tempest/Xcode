@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Code-X Pro • Coding Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="style-X.css" />
+</head>
+<body class="dark-mode">
+  <!-- Check if user is logged in -->
+  <div id="authCheck" class="hidden">
+    <div class="auth-message">
+      <h2>Access Restricted</h2>
+      <p>Please login first to access the coding platform.</p>
+      <button onclick="window.location.href='LandX.html'" class="btn-primary">
+        Go to Login
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" class="container hidden">
+    <nav class="navbar">
+      <div class="logo">Code<span class="accent">-X</span> Pro</div>
+      <div class="nav-right">
+        <div class="user-info">
+          <span id="userName">Guest</span>
+          <span class="level">Lvl <span id="level">1</span></span>
+          <span class="xp"><span id="xp">0</span> XP</span>
+        </div>
+        <button id="statsBtn" class="btn-icon" title="View Statistics">📊</button>
+        <button id="themeBtn" class="btn-icon" title="Toggle Theme">🌙</button>
+        <button id="logoutBtn" class="btn-outline">Logout</button>
+      </div>
+    </nav>
+
+    <main id="dashboard" class="dashboard">
+      <h1 class="welcome-title">Welcome back, <span id="greeting">Coder</span>!</h1>
+      <p class="subtitle">Choose a language to continue</p>
+
+      <div class="modules-grid">
+        <div class="module-card" onclick="openModule('html')">
+          <div class="icon">HTML</div>
+          <h3>HTML</h3>
+          <div class="progress"><div id="htmlBar" class="fill"></div></div>
+          <p><span id="htmlDone">0</span>/20 Levels</p>
+        </div>
+        <div class="module-card" onclick="openModule('css')">
+          <div class="icon">CSS</div>
+          <h3>CSS</h3>
+          <div class="progress"><div id="cssBar" class="fill"></div></div>
+          <p><span id="cssDone">0</span>/20 Levels</p>
+        </div>
+        <div class="module-card" onclick="openModule('js')">
+          <div class="icon">JS</div>
+          <h3>JavaScript</h3>
+          <div class="progress"><div id="jsBar" class="fill"></div></div>
+          <p><span id="jsDone">0</span>/20 Levels</p>
+        </div>
+      </div>
+    </main>
+
+    <div id="editor" class="editor hidden">
+      <div class="editor-nav">
+        <button onclick="closeEditor()" class="back-btn">← Back</button>
+        <h2 id="title">HTML Level 1</h2>
+        <div class="badges">
+          <span class="badge">Level <span id="currentLevelNum">1</span></span>
+          <span class="badge" id="xpBadge">+10 XP</span>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button data-s="&lt;">&lt;</button>
+        <button data-s="&gt;">&gt;</button>
+        <button data-s="/">/</button>
+        <button data-s="=">=</button>
+        <button data-s="&quot;">"</button>
+        <button data-s="'">'</button>
+        <button data-s=".">.</button>
+        <button data-s=",">,</button>
+        <button data-s=";">;</button>
+        <button data-s=":">:</button>
+        <button data-s="(">(</button>
+        <button data-s=")">)</button>
+        <button data-s="{">{</button>
+        <button data-s="}">}</button>
+        <button data-s="[">[</button>
+        <button data-s="]">]</button>
+        <button data-s="+">+</button>
+        <button data-s="-">-</button>
+        <button data-s="*">*</button>
+      </div>
+
+      <div class="split-view">
+        <textarea id="code" spellcheck="false"></textarea>
+        <div class="preview">
+          <div class="preview-bar">Live Preview</div>
+          <iframe id="preview"></iframe>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="runBtn" class="btn-primary">Run</button>
+        <button id="checkBtn" class="btn-success">Check Solution</button>
+        <button id="hintBtn" class="btn-outline">Hint</button>
+        <button id="nextBtn" class="btn-next" disabled>Next Level →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Modal -->
+  <div id="statsModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📊 Your Learning Statistics</h2>
+        <button class="close-btn" onclick="closeStats()">×</button>
+      </div>
+      <div class="modal-body" id="statsModalBody">
+        <!-- Statistics will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Challenge Modal -->
+  <div id="challengeModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2>🎯 Coding Challenge!</h2>
+        <button class="close-btn" onclick="closeChallenge()">×</button>
+      </div>
+      <div class="modal-body" id="challengeModalBody">
+        <!-- Challenge content will be loaded here -->
+      </div>
+      <div class="modal-footer" style="padding: 20px; border-top: 1px solid var(--border); text-align: center;">
+        <button onclick="startChallenge()" class="btn-primary" style="font-size: 1.2rem; padding: 15px 30px;">
+          Start Challenge! 🚀
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables and functions
+    let currentUser = null;
+    let currentLang = "html";
+    let currentLevel = 0;
+    let courseTimer = null;
+    let sessionStartTime = null;
+    let isChallengeLevel = false;
+    let challengeCompleted = false;
+    
+    // Global functions for inline onclick handlers
+    function openModule(lang) {
+      if (currentUser) {
+        currentLang = lang;
+        currentLevel = currentUser.progress[lang] || 0;
+        
+        if (currentLevel >= 20) currentLevel = 19;
+        
+        loadLevel();
+        document.getElementById("dashboard").classList.add("hidden");
+        document.getElementById("editor").classList.remove("hidden");
+      }
+    }
+    
+    function closeEditor() {
+      document.getElementById("editor").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+      updateUI();
+    }
+    function loadLevel() {
+  if (!window.levels || !window.levels[currentLang]) return;
+  
+  const lvl = window.levels[currentLang][currentLevel];
+  if (!lvl) return;
+  
+  // Add star emoji for challenge levels
+  const titlePrefix = lvl.isChallenge ? "⭐ " : "";
+  document.getElementById("title").textContent = `${titlePrefix}${currentLang.toUpperCase()} • ${lvl.title}`;
+  document.getElementById("currentLevelNum").textContent = currentLevel + 1;
+  
+  // Show template or instruction
+  if (lvl.template) {
+    document.getElementById("code").value = lvl.template;
+  } else if (lvl.instruction) {
+    document.getElementById("code").value = `// ${lvl.instruction}\n// Write your code below:\n\n`;
+  } else {
+    document.getElementById("code").value = "";
+  }
+  
+  // Check if this is a challenge level
+  isChallengeLevel = lvl.isChallenge === true;
+  challengeCompleted = currentUser.progress[currentLang] > currentLevel;
+  
+  // Show challenge modal if this is a challenge level and not completed
+  if (isChallengeLevel && !challengeCompleted && (currentLevel + 1) % 5 === 0) {
+    setTimeout(() => {
+      showChallengeModal();
+    }, 500);
+  }
+  
+  // Disable next button until level is completed
+  const nextBtn = document.getElementById("nextBtn");
+  const isCompleted = currentUser.progress[currentLang] > currentLevel;
+  nextBtn.disabled = !isCompleted;
+  
+  // Update XP badge for challenge levels
+  const xpBadge = document.getElementById("xpBadge");
+  if (xpBadge && isChallengeLevel) {
+    xpBadge.textContent = '+50 XP';
+    xpBadge.style.background = 'gold';
+    xpBadge.style.color = '#000';
+  } else if (xpBadge) {
+    xpBadge.textContent = '+10 XP';
+    xpBadge.style.background = '';
+    xpBadge.style.color = '';
+  }
+  
+  // Show instruction as hint
+  if (lvl.instruction) {
+    document.getElementById("hintBtn").dataset.instruction = lvl.instruction;
+  }
+  
+  runCode();
+}
+    
+    function runCode() {
+      const code = document.getElementById('code').value;
+      const preview = document.getElementById('preview');
+      
+      if (!preview) return;
+      
+      if (currentLang === 'html') {
+        preview.srcdoc = code;
+      } else if (currentLang === 'css') {
+        preview.srcdoc = `<style>${code}</style><body><h1>CSS Preview</h1><p>Styled paragraph</p></body>`;
+      } else if (currentLang === 'js') {
+        preview.srcdoc = `
+          <!DOCTYPE html>
+          <html>
+          <head><title>JS Output</title></head>
+          <body>
+            <h1>JavaScript Output</h1>
+            <div id="output"></div>
+            <button onclick="alert('Test!')">Test Button</button>
+            <script>
+              const output = document.getElementById('output');
+              console.log = function(...args) {
+                output.innerHTML += args.join(' ') + '<br>';
+              };
+              try { ${code} } catch(e) {
+                output.innerHTML += 'Error: ' + e.message + '<br>';
+              }
+            <\/script>
+          </body>
+          </html>
+        `;
+      }
+    }
+    
+    function updateUI() {
+      if (!currentUser) return;
+      
+      const total = currentUser.progress.html + currentUser.progress.css + currentUser.progress.js;
+      document.getElementById("level").textContent = Math.floor(total/10) + 1;
+      document.getElementById("xp").textContent = total * 10;
+      
+      ["html","css","js"].forEach(lang => {
+        const progress = currentUser.progress[lang];
+        document.getElementById(lang + "Done").textContent = progress;
+        document.getElementById(lang + "Bar").style.width = (progress / 20 * 100) + "%";
+      });
+    }
+    
+    // ===== CHALLENGE SYSTEM =====
+    
+    function showChallengeModal() {
+      if (!currentUser) return;
+      
+      const level = window.levels[currentLang][currentLevel];
+      if (!level || !level.isChallenge) return;
+      
+      const challengeNum = Math.floor((currentLevel + 1) / 5);
+      
+      document.getElementById('challengeModalBody').innerHTML = `
+        <div style="text-align: center; margin-bottom: 30px;">
+          <div style="font-size: 4rem; margin-bottom: 20px;">🏆</div>
+          <h2 style="color: var(--accent); margin-bottom: 15px;">Challenge Time!</h2>
+          <p style="font-size: 1.2rem; margin-bottom: 10px;">You've completed ${currentLevel} levels!</p>
+          <p style="color: #888; margin-bottom: 25px;">Time to test your skills with a real problem.</p>
+        </div>
+        
+        <div style="background: var(--bg); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <h3 style="color: var(--accent); margin-bottom: 15px;">📋 Challenge ${challengeNum}</h3>
+          <p style="font-size: 1.1rem; line-height: 1.6;">${level.challengeText || "Complete this advanced challenge to prove your skills!"}</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, var(--accent)20, transparent); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+          <h4 style="color: var(--accent); margin-bottom: 10px;">🎁 Reward:</h4>
+          <ul style="text-align: left; padding-left: 20px;">
+            <li>+50 XP (instead of 10)</li>
+            <li>Special badge on your profile</li>
+            <li>Unlock next 5 levels</li>
+          </ul>
+        </div>
+        
+        <div style="background: var(--bg); padding: 15px; border-radius: 10px; font-size: 0.9rem; color: #888;">
+          <strong>💡 Tip:</strong> Use everything you've learned in the past 5 levels to solve this challenge!
+        </div>
+      `;
+      
+      document.getElementById('challengeModal').classList.remove('hidden');
+      isChallengeLevel = true;
+    }
+    
+    function closeChallenge() {
+      document.getElementById('challengeModal').classList.add('hidden');
+    }
+    
+    function startChallenge() {
+      closeChallenge();
+    }
+    
+    function completeChallenge() {
+      if (!currentUser || !isChallengeLevel || challengeCompleted) return;
+      
+      // Award extra XP for challenge
+      if (currentLevel === currentUser.progress[currentLang]) {
+        currentUser.progress[currentLang]++;
+        currentUser.xp += 50; // 50 XP for challenges instead of 10
+        
+        // Add challenge completion badge
+        if (!currentUser.challengesCompleted) {
+          currentUser.challengesCompleted = {};
+        }
+        if (!currentUser.challengesCompleted[currentLang]) {
+          currentUser.challengesCompleted[currentLang] = [];
+        }
+        currentUser.challengesCompleted[currentLang].push(currentLevel + 1);
+        
+        saveUser();
+        
+        // Big celebration for challenge completion
+        confetti({
+          particleCount: 300,
+          spread: 100,
+          origin: { y: 0.6 }
+        });
+        
+        setTimeout(() => {
+          confetti({
+            particleCount: 200,
+            angle: 60,
+            spread: 80,
+            origin: { x: 0 }
+          });
+          
+          confetti({
+            particleCount: 200,
+            angle: 120,
+            spread: 80,
+            origin: { x: 1 }
+          });
+        }, 250);
+        
+        alert('🏆 AMAZING! Challenge Completed! +50 XP! 🎉');
+      }
+      
+      // Enable next button
+      document.getElementById('nextBtn').disabled = false;
+      challengeCompleted = true;
+      updateUI();
+    }
+    
+    // ===== STATISTICS FUNCTIONS =====
+    
+    function showStatistics() {
+      if (!currentUser) return;
+      
+      const totalTime = currentUser.totalCourseTime || 0;
+      const loginCount = currentUser.loginCount || 0;
+      const loginDates = currentUser.loginDates || [];
+      const createdAt = currentUser.createdAt || new Date().toISOString();
+      const challenges = currentUser.challengesCompleted || {};
+      
+      // Calculate completed challenges
+      const htmlChallenges = challenges.html ? challenges.html.length : 0;
+      const cssChallenges = challenges.css ? challenges.css.length : 0;
+      const jsChallenges = challenges.js ? challenges.js.length : 0;
+      const totalChallenges = htmlChallenges + cssChallenges + jsChallenges;
+      
+      // Calculate time
+      const hours = Math.floor(totalTime / 3600);
+      const minutes = Math.floor((totalTime % 3600) / 60);
+      const seconds = totalTime % 60;
+      
+      // Calculate average time per session
+      const avgTime = loginCount > 0 ? Math.floor(totalTime / loginCount) : 0;
+      const avgHours = Math.floor(avgTime / 3600);
+      const avgMinutes = Math.floor((avgTime % 3600) / 60);
+      
+      // Create calendar
+      const calendarHTML = createLoginCalendar(loginDates);
+      
+      document.getElementById('statsModalBody').innerHTML = `
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Course Time</h3>
+            <div class="value">${hours}h ${minutes}m</div>
+            <div class="label">${seconds}s total</div>
+          </div>
+          <div class="stat-card">
+            <h3>Login Count</h3>
+            <div class="value">${loginCount}</div>
+            <div class="label">Total logins</div>
+          </div>
+          <div class="stat-card">
+            <h3>Challenges</h3>
+            <div class="value">${totalChallenges}</div>
+            <div class="label">Completed</div>
+          </div>
+          <div class="stat-card">
+            <h3>Account Age</h3>
+            <div class="value">${Math.floor((new Date() - new Date(createdAt)) / (1000 * 60 * 60 * 24))}</div>
+            <div class="label">Days active</div>
+          </div>
+        </div>
+        
+        <div style="margin: 25px 0; padding: 20px; background: var(--bg); border-radius: 12px;">
+          <h3 style="color: var(--accent); margin-bottom: 15px;">🏆 Challenge Progress</h3>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+            <div style="text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold;">${htmlChallenges}/4</div>
+              <div style="color: #888; font-size: 0.9rem;">HTML Challenges</div>
+              <div style="margin-top: 5px; height: 6px; background: var(--gray); border-radius: 3px;">
+                <div style="width: ${(htmlChallenges/4)*100}%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+              </div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold;">${cssChallenges}/4</div>
+              <div style="color: #888; font-size: 0.9rem;">CSS Challenges</div>
+              <div style="margin-top: 5px; height: 6px; background: var(--gray); border-radius: 3px;">
+                <div style="width: ${(cssChallenges/4)*100}%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+              </div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold;">${jsChallenges}/4</div>
+              <div style="color: #888; font-size: 0.9rem;">JS Challenges</div>
+              <div style="margin-top: 5px; height: 6px; background: var(--gray); border-radius: 3px;">
+                <div style="width: ${(jsChallenges/4)*100}%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="calendar">
+          <h3>📅 Login Calendar (Last 30 Days)</h3>
+          ${calendarHTML}
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: var(--bg); border-radius: 10px;">
+          <h4 style="color: var(--accent); margin-bottom: 10px;">Recent Logins</h4>
+          ${loginDates.slice(-10).reverse().map(date => {
+            const d = new Date(date);
+            return `<div style="margin: 5px 0; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+              ${d.toLocaleDateString()} at ${d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+            </div>`;
+          }).join('')}
+        </div>
+      `;
+      
+      document.getElementById('statsModal').classList.remove('hidden');
+    }
+    
+    function createLoginCalendar(loginDates) {
+      // Get last 30 days
+      const today = new Date();
+      const days = [];
+      
+      // Create array of last 30 days
+      for (let i = 29; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        days.push(date);
+      }
+      
+      // Convert login dates to YYYY-MM-DD format for easy comparison
+      const loginDays = loginDates.map(date => {
+        const d = new Date(date);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      });
+      
+      // Create calendar HTML
+      let calendarHTML = `<div class="calendar-grid">`;
+      
+      // Add day headers
+      const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      dayHeaders.forEach(day => {
+        calendarHTML += `<div class="calendar-day" style="font-weight: bold; color: var(--accent);">${day}</div>`;
+      });
+      
+      // Add empty cells for days before the first day
+      const firstDay = days[0].getDay();
+      for (let i = 0; i < firstDay; i++) {
+        calendarHTML += `<div class="calendar-day"></div>`;
+      }
+      
+      // Add days
+      days.forEach(date => {
+        const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const isLoginDay = loginDays.includes(dateStr);
+        const dayClass = isLoginDay ? 'calendar-day login-day' : 'calendar-day';
+        
+        calendarHTML += `
+          <div class="${dayClass}" title="${date.toLocaleDateString()}">
+            ${date.getDate()}
+          </div>
+        `;
+      });
+      
+      calendarHTML += `</div>`;
+      
+      return calendarHTML;
+    }
+    
+    function closeStats() {
+      document.getElementById('statsModal').classList.add('hidden');
+    }
+    
+    // ===== COURSE TIME TRACKING =====
+    
+    function initCourseTimer() {
+      const sessionStart = localStorage.getItem('codex_session_start');
+      if (sessionStart) {
+        sessionStartTime = new Date(sessionStart);
+      } else {
+        sessionStartTime = new Date();
+        localStorage.setItem('codex_session_start', sessionStartTime.toISOString());
+      }
+      
+      // Update course time every minute
+      courseTimer = setInterval(updateCourseTime, 60000);
+      
+      // Save time before leaving
+      window.addEventListener('beforeunload', function() {
+        updateCourseTime();
+      });
+    }
+    
+    function updateCourseTime() {
+      if (!currentUser || !sessionStartTime) return;
+      
+      const now = new Date();
+      const sessionSeconds = Math.floor((now - sessionStartTime) / 1000);
+      
+      // Add to total course time
+      currentUser.totalCourseTime = (currentUser.totalCourseTime || 0) + sessionSeconds;
+      sessionStartTime = now;
+      localStorage.setItem('codex_session_start', sessionStartTime.toISOString());
+      
+      // Save updated user data
+      saveUser();
+    }
+    
+    function saveUser() {
+      let users = JSON.parse(localStorage.getItem('codex_users') || '{}');
+      users[currentUser.username.toLowerCase()] = currentUser;
+      localStorage.setItem('codex_users', JSON.stringify(users));
+      localStorage.setItem('codex_current_user', JSON.stringify(currentUser));
+    }
+    
+    // ===== EVENT LISTENERS =====
+    
+function setupEventListeners() {
+  // Run button
+  document.getElementById('runBtn').addEventListener('click', runCode);
+  
+  // Check solution button
+  document.getElementById('checkBtn').addEventListener('click', function() {
+    const code = document.getElementById('code').value;
+    const levelData = window.levels[currentLang][currentLevel];
+    
+    if (levelData && levelData.check.test(code)) {
+      if (currentLevel === currentUser.progress[currentLang]) {
+        if (isChallengeLevel) {
+          completeChallenge();
+        } else {
+          // Regular level completion
+          currentUser.progress[currentLang]++;
+          currentUser.xp += 10;
+          saveUser();
+          
+          // Celebration
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+          
+          alert('✅ Level Completed! +10 XP');
+        }
+      }
+      
+      // Enable next button
+      document.getElementById('nextBtn').disabled = false;
+      updateUI();
+    } else {
+      alert('❌ Not quite right. Try again!');
+    }
+  });
+  
+  // Next level button
+  document.getElementById('nextBtn').addEventListener('click', function() {
+    if (currentLevel < 19) {
+      currentLevel++;
+      document.getElementById('nextBtn').disabled = true;
+      loadLevel();
+    } else {
+      alert('🎉 All levels completed in this module!');
+    }
+  });
+  
+  // Hint button
+  document.getElementById('hintBtn').addEventListener('click', function() {
+    const levelData = window.levels[currentLang][currentLevel];
+    if (levelData && levelData.instruction) {
+      alert(`💡 Instruction: ${levelData.instruction}`);
+    } else if (levelData) {
+      alert(`💡 Hint: Your code needs to match this pattern:\n${levelData.check.toString()}`);
+    }
+  });
+  
+  // Theme toggle
+  document.getElementById('themeBtn').addEventListener('click', function() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.body.classList.toggle('light-mode', !isDark);
+    this.textContent = isDark ? '🌙' : '☀️';
+    localStorage.setItem('codex_theme', isDark ? 'dark' : 'light');
+  });
+  
+  // Stats button
+  document.getElementById('statsBtn').addEventListener('click', showStatistics);
+  
+  // Logout button - MOVED HERE
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to logout?')) {
+      localStorage.removeItem('codex_current_user');
+      window.location.href = 'LandX.html';
+    }
+  });
+  
+  // Code input
+  document.getElementById('code').addEventListener('input', function() {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(runCode, 300);
+  });
+  
+  // Toolbar buttons
+  document.querySelectorAll('.toolbar button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const textarea = document.getElementById('code');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const content = textarea.value;
+      const insert = this.dataset.s;
+      
+      textarea.value = content.substring(0, start) + insert + content.substring(end);
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + insert.length;
+      runCode();
+    });
+  });
+  
+  // Close modal when clicking outside
+  document.getElementById('statsModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeStats();
+    }
+  });
+  
+  document.getElementById('challengeModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeChallenge();
+    }
+  });
+}
+    
+    // ===== AUTHENTICATION AND INITIALIZATION =====
+    
+    // Authentication check
+    document.addEventListener('DOMContentLoaded', function() {
+      const userData = localStorage.getItem('codex_current_user');
+      const authCheck = document.getElementById('authCheck');
+      const app = document.getElementById('app');
+      
+      if (!userData) {
+        authCheck.classList.remove('hidden');
+        app.classList.add('hidden');
+        return;
+      }
+      
+      try {
+        currentUser = JSON.parse(userData);
+        
+        // Show the app
+        authCheck.classList.add('hidden');
+        app.classList.remove('hidden');
+        
+        // Load user data
+        document.getElementById('userName').textContent = currentUser.username;
+        document.getElementById('greeting').textContent = currentUser.username;
+        
+        // Initialize
+        updateUI();
+        setupEventListeners();
+        initCourseTimer();
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('codex_theme');
+        const themeBtn = document.getElementById('themeBtn');
+        if (savedTheme === 'light') {
+          document.body.classList.remove('dark-mode');
+          document.body.classList.add('light-mode');
+          themeBtn.textContent = '☀️';
+        }
+        
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        localStorage.removeItem('codex_current_user');
+        authCheck.classList.remove('hidden');
+        app.classList.add('hidden');
+      }
+    });
+    
+    // Logout functionality
+    // Fix logout button - add event listener after page loads
+setTimeout(function() {
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('codex_current_user');
+        window.location.href = 'LandX.html';
+      }
+    });
+  }
+}, 1000);
+  </script>
+  
+  <script src="levels.js"></script>
+  
+</body>
+</html>

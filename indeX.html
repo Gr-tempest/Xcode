@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Code-X Pro • Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-mode">
+  <div class="landing-container">
+    <div class="landing-box">
+      <h1>Code<span class="accent">-X</span> Pro</h1>
+      <p class="tagline">Master Web Development from Zero to Hero</p>
+      
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required autofocus />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit" class="btn-primary">Login / Register</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      
+      // Login form handler
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        
+        if (!username || !password) {
+          alert('Please enter both username and password!');
+          return;
+        }
+        
+        // ADMIN CHECK - Special admin account
+        if (username === 'Admin' && password === 'Nimda') {
+          // Create admin user object
+          const adminUser = {
+            username: 'Admin',
+            password: 'Nimda',
+            isAdmin: true,
+            adminSince: new Date().toISOString(),
+            progress: { html: 20, css: 20, js: 20 },
+            xp: 9999,
+            loginCount: 1,
+            totalCourseTime: 0,
+            loginDates: [new Date().toISOString()],
+            challengesCompleted: { 
+              html: [5, 10, 15, 20], 
+              css: [5, 10, 15, 20], 
+              js: [5, 10, 15, 20] 
+            },
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            permissions: {
+              viewAllUsers: true,
+              editUsers: true,
+              editLevels: true,
+              resetProgress: true,
+              viewStatistics: true
+            }
+          };
+          
+          // Save admin data
+          localStorage.setItem('codex_current_user', JSON.stringify(adminUser));
+          
+          // Add to users list
+          let users = JSON.parse(localStorage.getItem('codex_users') || '{}');
+          users['admin'] = adminUser;
+          localStorage.setItem('codex_users', JSON.stringify(users));
+          
+          // Start session
+          localStorage.setItem('codex_session_start', new Date().toISOString());
+          
+          // Redirect to ADMIN PANEL
+          window.location.href = 'AdminX.html';
+          return;
+        }
+        
+        // SPECIAL USER CHECK - butkii with love and motivation
+        if (username === 'butkii' && password === 'Mebutkii') {
+          // Create special user object with love theme
+          const specialUser = {
+            username: 'butkii',
+            password: 'Mebutkii',
+            isSpecial: true,
+            specialSince: new Date().toISOString(),
+            progress: { html: 0, css: 0, js: 0 },
+            xp: 0,
+            loginCount: 1,
+            totalCourseTime: 0,
+            loginDates: [new Date().toISOString()],
+            challengesCompleted: {},
+            loveMessages: [
+              "You're amazing butkii! 💕",
+              "I believe in you! 🌟",
+              "You're doing great! 🎯",
+              "Keep going, superstar! ⭐",
+              "You make coding look easy! 💻",
+              "I'm so proud of you! 🏆",
+              "You're a coding genius! 🧠",
+              "Love you lots! 💖",
+              "You're unstoppable! 🚀",
+              "You're my favorite coder! 👩‍💻"
+            ],
+            motivationLevel: 100,
+            loveScore: 1000,
+            specialBadges: ['💕 Love Coder', '🌟 Motivation Star', '🏆 Achievement Hero'],
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+          };
+          
+          // Save special user data
+          localStorage.setItem('codex_current_user', JSON.stringify(specialUser));
+          
+          // Add to users list
+          let users = JSON.parse(localStorage.getItem('codex_users') || '{}');
+          users['butkii'] = specialUser;
+          localStorage.setItem('codex_users', JSON.stringify(users));
+          
+          // Start session
+          localStorage.setItem('codex_session_start', new Date().toISOString());
+          localStorage.setItem('special_user_butkii', 'true');
+          
+          // Redirect to SPECIAL butkii page
+          window.location.href = 'butkii-X.html';
+          return;
+        }
+        
+        // Get users from localStorage or create empty object
+        let users = JSON.parse(localStorage.getItem('codex_users') || '{}');
+        const userKey = username.toLowerCase();
+        
+        // Check if user exists
+        if (!users[userKey]) {
+          // New user - create account
+          users[userKey] = {
+            username: username,
+            password: password,
+            isAdmin: false,
+            isSpecial: false,
+            progress: { html: 0, css: 0, js: 0 },
+            xp: 0,
+            loginCount: 1,
+            totalCourseTime: 0,
+            loginDates: [new Date().toISOString()],
+            challengesCompleted: {},
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+          };
+          alert(`Welcome ${username}! Account created successfully. 🎉`);
+        } else if (users[userKey].password !== password) {
+          alert('Incorrect password! Please try again.');
+          passwordInput.value = '';
+          passwordInput.focus();
+          return;
+        } else {
+          // Existing user - update login stats
+          users[userKey].loginCount = (users[userKey].loginCount || 0) + 1;
+          users[userKey].lastLogin = new Date().toISOString();
+          
+          // Add to login dates
+          if (!users[userKey].loginDates) {
+            users[userKey].loginDates = [];
+          }
+          users[userKey].loginDates.push(new Date().toISOString());
+          
+          // Keep only last 30 days of login dates
+          if (users[userKey].loginDates.length > 30) {
+            users[userKey].loginDates = users[userKey].loginDates.slice(-30);
+          }
+        }
+        
+        // Save user data
+        const userData = users[userKey];
+        localStorage.setItem('codex_current_user', JSON.stringify(userData));
+        localStorage.setItem('codex_users', JSON.stringify(users));
+        
+        // Start session timer
+        localStorage.setItem('codex_session_start', new Date().toISOString());
+        
+        // Redirect to main app
+        window.location.href = 'Xcode.html';
+      });
+      
+      // Enter key support
+      passwordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          loginForm.dispatchEvent(new Event('submit'));
+        }
+      });
+      
+      // Auto-focus username
+      usernameInput.focus();
+    });
+  </script>
+</body>
+</html>

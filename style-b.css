@@ -1,0 +1,279 @@
+    /* Special love theme for butkii */
+    :root {
+      --love-color: #ff6b8b;
+      --love-accent: #ff3366;
+      --love-bg: #1a0a0a;
+      --love-bg2: #2a0a1a;
+    }
+    
+    .love-mode {
+      --bg: var(--love-bg);
+      --bg2: var(--love-bg2);
+      --accent: var(--love-accent);
+    }
+    
+    body.love-mode {
+      background: linear-gradient(135deg, #1a0a0a, #2a0a1a, #3a0a2a);
+      background-attachment: fixed;
+    }
+    
+    /* Floating hearts */
+    .floating-heart {
+      position: fixed;
+      font-size: 24px;
+      z-index: -1;
+      animation: float 20s linear infinite;
+      opacity: 0.3;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    }
+    
+    /* Special navbar */
+    .love-navbar {
+      background: rgba(255, 51, 102, 0.1);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--love-accent);
+    }
+    
+    .love-badge {
+      background: linear-gradient(45deg, #ff3366, #ff6b8b);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-left: 10px;
+      animation: heartbeat 1.5s infinite;
+    }
+    
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Welcome section */
+    .love-welcome {
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(255, 107, 139, 0.1);
+      border-radius: 20px;
+      margin: 30px 0;
+      border: 2px solid var(--love-accent);
+    }
+    
+    .love-welcome h1 {
+      font-size: 3rem;
+      color: var(--love-accent);
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
+    }
+    
+    .love-message {
+      font-size: 1.2rem;
+      color: #ffb6c1;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    /* Stats with hearts */
+    .love-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+    
+    .love-stat-card {
+      background: rgba(255, 107, 139, 0.1);
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      border: 1px solid rgba(255, 51, 102, 0.3);
+      transition: transform 0.3s;
+    }
+    
+    .love-stat-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 107, 139, 0.2);
+    }
+    
+    .love-stat-card .icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+    
+    .love-stat-card .value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--love-accent);
+      margin: 10px 0;
+    }
+    
+    .love-stat-card .label {
+      color: #ffb6c1;
+      font-size: 1rem;
+    }
+    
+    /* Module cards with love */
+    .love-module-card {
+      background: rgba(255, 107, 139, 0.1);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .love-module-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--love-accent);
+      box-shadow: 0 15px 30px rgba(255, 51, 102, 0.3);
+    }
+    
+    .love-module-card::before {
+      content: '💕';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      opacity: 0.5;
+    }
+    
+    .love-module-card .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      color: var(--love-accent);
+    }
+    
+    .love-progress {
+      height: 10px;
+      background: rgba(255, 107, 139, 0.2);
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+    
+    .love-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff3366, #ff6b8b);
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+    
+    /* Motivational quotes */
+    .motivation-box {
+      background: rgba(255, 107, 139, 0.1);
+      padding: 30px;
+      border-radius: 20px;
+      margin: 40px 0;
+      text-align: center;
+      border-left: 5px solid var(--love-accent);
+    }
+    
+    .motivation-box h3 {
+      color: var(--love-accent);
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+    }
+    
+    .motivation-text {
+      font-size: 1.3rem;
+      color: #ffb6c1;
+      font-style: italic;
+      margin-bottom: 20px;
+      min-height: 60px;
+    }
+    
+    .motivation-btn {
+      background: linear-gradient(45deg, #ff3366, #ff6b8b);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    
+    .motivation-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Love achievements */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 30px 0;
+    }
+    
+    .achievement-badge {
+      background: rgba(255, 107, 139, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      border: 1px solid rgba(255, 51, 102, 0.3);
+    }
+    
+    .achievement-badge .badge-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .achievement-badge .badge-name {
+      color: var(--love-accent);
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .achievement-badge .badge-desc {
+      color: #ffb6c1;
+      font-size: 0.9rem;
+    }
+    
+    /* Love editor */
+    .love-editor {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--love-accent);
+    }
+    
+    .love-toolbar button:hover {
+      background: var(--love-accent);
+    }
+    
+    .love-btn-primary {
+      background: linear-gradient(45deg, #ff3366, #ff6b8b);
+      color: white;
+      border: none;
+    }
+    
+    .love-btn-success {
+      background: linear-gradient(45deg, #00ff88, #00cc66);
+      color: white;
+      border: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .love-welcome h1 {
+        font-size: 2.5rem;
+      }
+      
+      .love-stats {
+        grid-template-columns: 1fr;
+      }
+      
+      .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  

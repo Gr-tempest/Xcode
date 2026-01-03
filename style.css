@@ -1,0 +1,80 @@
+:root {--bg: #0a0a0a; --bg2: #1a1a1a; --text: #e0e0e0; --accent: #00d4ff; --success: #00ff88; --gray: #333; --border: #444;}
+.light-mode {--bg: #f0f2f5; --bg2: #fff; --text: #222; --accent: #007bff; --success: #28a745; --gray: #ddd; --border: #ddd;}
+
+* {margin:0; padding:0; box-sizing:border-box;}
+body {background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; min-height:100vh; transition:0.4s;}
+
+/* Shared Components */
+.hidden {display:none !important;}
+.btn-primary, .btn-success, .btn-next {padding:12px 24px; border:none; border-radius:10px; font-weight:bold; cursor:pointer;}
+.btn-primary {background:var(--accent); color:#000;}
+.btn-success {background:var(--success); color:#000;}
+.btn-next {background:var(--accent); color:#000; opacity:0.5;}
+.btn-next:not(:disabled) {opacity:1;}
+.btn-outline {background:transparent; border:2px solid var(--accent); color:var(--accent); padding:10px 20px; border-radius:8px; cursor:pointer;}
+.btn-icon {background:none; border:none; color:inherit; cursor:pointer; font-size:1.2rem;}
+.accent {color:var(--accent);}
+
+/* Login/Landing Page */
+.landing-container, .auth-container {display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px;}
+.landing-box, .auth-box {background:var(--bg2); padding:40px; border-radius:20px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.5); width:100%; max-width:400px;}
+.landing-box h1, .auth-box h1 {font-size:3.5rem; margin-bottom:10px;}
+.tagline {color:#888; margin-bottom:30px;}
+.demo {margin-top:20px; color:#666; font-size:0.9rem;}
+input {width:100%; padding:15px; margin:12px 0; border:none; border-radius:10px; background:var(--gray); color:var(--text); font-size:1.1rem;}
+
+/* Features List (LandX only) */
+.features {margin-top:30px; text-align:left;}
+.feature-item {margin:10px 0; padding-left:20px; position:relative;}
+.feature-item::before {content:"✓"; color:var(--accent); position:absolute; left:0;}
+
+/* Auth Message (Xcode only) */
+#authCheck {position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:1000;}
+.auth-message {background:var(--bg2); padding:40px; border-radius:16px; text-align:center; max-width:400px; width:90%; box-shadow:0 10px 30px rgba(0,0,0,0.3);}
+.auth-message h2 {margin-bottom:15px; color:var(--accent);}
+.auth-message p {margin-bottom:25px; opacity:0.8;}
+
+/* Main App (Xcode) */
+.container {max-width:1400px; margin:0 auto; padding:20px;}
+.navbar {display:flex; justify-content:space-between; align-items:center; padding:20px 0; border-bottom:1px solid var(--border);}
+.logo {font-size:2.2rem; font-weight:900;}
+.nav-right {display:flex; align-items:center; gap:15px;}
+.user-info {display:flex; align-items:center; gap:15px; background:var(--bg2); padding:8px 15px; border-radius:10px;}
+.level, .xp {font-weight:bold;}
+
+/* Dashboard */
+.dashboard {margin-top:30px;}
+.welcome-title {font-size:2.5rem; margin-bottom:10px;}
+.subtitle {color:#888; font-size:1.1rem; margin-bottom:30px;}
+.modules-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; margin-top:40px;}
+.module-card {background:var(--bg2); padding:30px; border-radius:20px; text-align:center; cursor:pointer; transition:0.4s; box-shadow:0 10px 30px rgba(0,0,0,0.3);}
+.module-card:hover {transform:translateY(-10px);}
+.module-card .icon {font-size:3.5rem; margin-bottom:15px; font-weight:bold;}
+.progress {height:10px; background:var(--gray); border-radius:5px; overflow:hidden; margin:15px 0;}
+.fill {height:100%; background:var(--accent); width:0%; transition:width 0.6s ease;}
+
+/* Editor */
+.editor {margin-top:30px;}
+.editor-nav {display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;}
+.back-btn {background:none; border:none; color:var(--accent); font-size:1.2rem; cursor:pointer;}
+.badges {display:flex; gap:10px;}
+.badge {background:var(--bg2); padding:5px 15px; border-radius:20px; font-size:0.9rem;}
+.toolbar {display:flex; flex-wrap:wrap; gap:8px; padding:15px; background:#000; border-radius:12px; margin:20px 0;}
+.toolbar button {width:46px; height:46px; background:#222; color:#fff; border:none; border-radius:10px; font-weight:bold; cursor:pointer; font-size:1.1rem;}
+.toolbar button:hover {background:var(--accent); color:#000;}
+.split-view {display:grid; grid-template-columns:1fr 1fr; gap:25px; height:65vh;}
+#code {background:#000; color:#0f0; padding:20px; border:none; border-radius:12px; font-family:'Courier New',monospace; font-size:1.1rem; resize:none;}
+.preview {background:#fff; border-radius:12px; overflow:hidden;}
+.preview-bar {background:#222; color:#fff; padding:12px; text-align:center; font-weight:bold;}
+#preview {width:100%; height:calc(100% - 48px); border:none;}
+.actions {margin-top:25px; display:flex; gap:12px; justify-content:flex-end; flex-wrap:wrap;}
+
+/* Responsive */
+@media (max-width:768px) {
+  .modules-grid {grid-template-columns:1fr;}
+  .split-view {grid-template-columns:1fr; height:auto;}
+  #code, #preview {height:350px;}
+  .navbar {flex-direction:column; gap:15px; align-items:flex-start;}
+  .nav-right {width:100%; justify-content:space-between;}
+  .welcome-title {font-size:2rem;}
+}

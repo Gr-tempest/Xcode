@@ -1,0 +1,2722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Code-X Pro • Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style-A.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    /* Enhanced Admin Styles */
+    .level-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .level-stat-card {
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    .level-stat-card h4 {
+      margin: 0 0 10px 0;
+      color: var(--text);
+    }
+    
+    .level-stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    
+    .level-stat-label {
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+    
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    
+    .page-btn {
+      padding: 8px 15px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--text);
+    }
+    
+    .page-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .level-metadata {
+      background: var(--bg);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--accent);
+    }
+    
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .metadata-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .metadata-label {
+      font-size: 0.8rem;
+      color: #888;
+    }
+    
+    .metadata-value {
+      font-weight: bold;
+      color: var(--text);
+    }
+    
+    .challenge-badge {
+      background: linear-gradient(45deg, #ffd700, #ffaa00);
+      color: #333;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    
+    .difficulty-badge {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 5px;
+    }
+    
+    .difficulty-beginner {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .difficulty-intermediate {
+      background: #2196F3;
+      color: white;
+    }
+    
+    .difficulty-advanced {
+      background: #FF9800;
+      color: white;
+    }
+    
+    .difficulty-expert {
+      background: #f44336;
+      color: white;
+    }
+    
+    .level-list-container {
+      max-height: 500px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    
+    .level-list-item {
+      padding: 10px;
+      margin: 5px 0;
+      background: var(--bg);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .level-list-item:hover {
+      background: var(--accent-light);
+      transform: translateX(5px);
+    }
+    
+    .level-list-item.selected {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .search-box {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 12px 40px 12px 15px;
+      border-radius: 25px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+    }
+    
+    .search-box i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+    }
+    
+    .completion-chart {
+      width: 100%;
+      height: 200px;
+      margin: 20px 0;
+    }
+    
+    /* Enhanced Editor */
+    .editor-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    @media (max-width: 1200px) {
+      .editor-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .editor-section {
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    
+    .editor-section h4 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: var(--accent);
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text);
+      font-weight: bold;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--bg-dark);
+      color: var(--text);
+    }
+    
+    .form-textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100px;
+      font-family: monospace;
+      resize: vertical;
+    }
+    
+    .regex-tester {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: monospace;
+      margin: 10px 0;
+    }
+    
+    .regex-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    
+    .regex-success {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .regex-error {
+      background: #f44336;
+      color: white;
+    }
+    
+    /* Quick Stats */
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .quick-stat {
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    .quick-stat i {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    
+    .quick-stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    
+    .quick-stat-label {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: var(--accent);
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(30px);
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <!-- Check if user is admin -->
+  <div id="authCheck" class="hidden">
+    <div class="auth-message">
+      <h2>⛔ Access Denied</h2>
+      <p>Admin privileges required to access this page.</p>
+      <div style="display: flex; gap: 15px; margin-top: 20px;">
+        <button onclick="window.location.href='LandX.html'" class="btn-primary">
+          Go to Login
+        </button>
+        <button onclick="window.location.href='Xcode.html'" class="btn-outline">
+          Go to Main App
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminDashboard" class="hidden">
+    <header class="admin-header">
+      <nav class="admin-nav">
+        <div class="admin-title">
+          <span class="admin-crown">👑</span>
+          <span>Code<span class="accent">-X</span> Pro Admin</span>
+          
+        </div>
+        <div class="nav-right">
+          <button class="btn-primary" onclick="refreshDashboard()">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+          <button id="logoutBtn" class="btn-outline">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="admin-main">
+      <div class="admin-welcome">
+        <h1>Welcome, <span id="adminName">Admin</span> <span class="admin-crown">👑</span></h1>
+        <p id="adminStats">Loading admin statistics...</p>
+        <div class="quick-stats" id="quickStats">
+          <!-- Quick stats will be loaded here -->
+        </div>
+      </div>
+
+      <div class="admin-stats-grid" id="statsGrid">
+        <!-- Stats will be loaded here -->
+      </div>
+
+      <div class="admin-section">
+        <h2>Admin Controls</h2>
+        
+        <div class="admin-tabs">
+          <button class="admin-tab active" onclick="switchTab('overview')">
+            <i class="fas fa-tachometer-alt"></i> Overview
+          </button>
+          <button class="admin-tab" onclick="switchTab('users')">
+            <i class="fas fa-users"></i> User Management
+          </button>
+          <button class="admin-tab" onclick="switchTab('levels')">
+            <i class="fas fa-code"></i> Level Editor (500 each)
+          </button>
+          <button class="admin-tab" onclick="switchTab('analytics')">
+            <i class="fas fa-chart-line"></i> Analytics
+          </button>
+          <button class="admin-tab" onclick="switchTab('tools')">
+            <i class="fas fa-tools"></i> System Tools
+          </button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overviewTab" class="tab-content active">
+          <h3>System Overview</h3>
+          
+          <div class="level-stats-grid">
+            <div class="level-stat-card">
+              <h4>HTML Levels</h4>
+              <div class="level-stat-value" id="htmlLevelCount">0</div>
+              <div class="level-stat-label">Total Levels</div>
+              <div class="progress-bar-small" style="margin-top: 10px;">
+                <div class="progress-fill" id="htmlProgressBar" style="width: 0%"></div>
+              </div>
+            </div>
+            
+            <div class="level-stat-card">
+              <h4>CSS Levels</h4>
+              <div class="level-stat-value" id="cssLevelCount">0</div>
+              <div class="level-stat-label">Total Levels</div>
+              <div class="progress-bar-small" style="margin-top: 10px;">
+                <div class="progress-fill" id="cssProgressBar" style="width: 0%"></div>
+              </div>
+            </div>
+            
+            <div class="level-stat-card">
+              <h4>JavaScript Levels</h4>
+              <div class="level-stat-value" id="jsLevelCount">0</div>
+              <div class="level-stat-label">Total Levels</div>
+              <div class="progress-bar-small" style="margin-top: 10px;">
+                <div class="progress-fill" id="jsProgressBar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="metadata-grid" style="margin-top: 30px;">
+            <div class="metadata-item">
+              <span class="metadata-label">Total Levels</span>
+              <span class="metadata-value" id="totalLevels">0</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Challenge Levels</span>
+              <span class="metadata-value" id="challengeLevels">0</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Users Online</span>
+              <span class="metadata-value" id="usersOnline">0</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Avg. Progress</span>
+              <span class="metadata-value" id="avgProgress">0%</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">System Health</span>
+              <span class="metadata-value" style="color: #4CAF50;">✓ Good</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Last Updated</span>
+              <span class="metadata-value" id="lastUpdated">Just now</span>
+            </div>
+          </div>
+          
+          <h3 style="margin-top: 40px;">Quick Actions</h3>
+          <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+            <button class="btn-primary" onclick="switchTab('levels')">
+              <i class="fas fa-edit"></i> Edit Levels
+            </button>
+            <button class="btn-outline" onclick="switchTab('users')">
+              <i class="fas fa-user-cog"></i> Manage Users
+            </button>
+            <button class="btn-outline" onclick="exportAllData()">
+              <i class="fas fa-download"></i> Backup Data
+            </button>
+            <button class="btn-outline" onclick="generateLevelReport()">
+              <i class="fas fa-file-alt"></i> Generate Report
+            </button>
+            <button class="btn-outline" onclick="checkSystemHealth()">
+              <i class="fas fa-heartbeat"></i> System Check
+            </button>
+          </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="usersTab" class="tab-content">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center;">
+            <h3>All Users (<span id="userCount">0</span>)</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <div class="search-box">
+                <input type="text" id="userSearch" placeholder="Search users by name, email, or level...">
+                <i class="fas fa-search"></i>
+              </div>
+              <button class="btn-primary" onclick="createNewUser()">
+                <i class="fas fa-user-plus"></i> New User
+              </button>
+              <button class="btn-outline" onclick="importUsers()">
+                <i class="fas fa-file-import"></i> Import
+              </button>
+            </div>
+          </div>
+          
+          <div class="user-filters" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-small active" onclick="filterUsers('all')">All</button>
+            <button class="btn-small" onclick="filterUsers('active')">Active Today</button>
+            <button class="btn-small" onclick="filterUsers('admins')">Admins</button>
+            <button class="btn-small" onclick="filterUsers('beginners')">Beginners</button>
+            <button class="btn-small" onclick="filterUsers('advanced')">Advanced</button>
+            <select id="sortUsers" onchange="sortUserList()" style="padding: 8px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 5px;">
+              <option value="name">Sort by Name</option>
+              <option value="progress">Sort by Progress</option>
+              <option value="xp">Sort by XP</option>
+              <option value="recent">Sort by Recent</option>
+            </select>
+          </div>
+          
+          <div class="user-list" id="userList">
+            <!-- Users will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Levels Tab -->
+        <div id="levelsTab" class="tab-content">
+          <h3>Level Editor (500 Levels Each Category)</h3>
+          
+          <div class="level-editor-container">
+            <div class="level-selector" style="margin-bottom: 20px;">
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <select id="levelLang" onchange="loadLevelForEdit()" style="flex: 1;">
+                  <option value="html">HTML (500 levels)</option>
+                  <option value="css">CSS (500 levels)</option>
+                  <option value="js">JavaScript (500 levels)</option>
+                </select>
+                
+                <select id="levelCategory" onchange="filterLevelsByCategory()" style="flex: 1;">
+                  <option value="all">All Categories</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                  <option value="expert">Expert</option>
+                  <option value="challenge">Challenges</option>
+                </select>
+                
+                <select id="levelNumber" onchange="loadLevelForEdit()" style="flex: 2;">
+                  <!-- Levels will be populated dynamically -->
+                </select>
+                
+                <div class="search-box" style="flex: 2;">
+                  <input type="text" id="levelSearch" placeholder="Search levels..." oninput="searchLevels()">
+                  <i class="fas fa-search"></i>
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn-primary" onclick="saveLevelChanges()">
+                  <i class="fas fa-save"></i> Save Level
+                </button>
+                <button class="btn-outline" onclick="resetLevelChanges()">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+                <button class="btn-outline" onclick="previewLevel()">
+                  <i class="fas fa-eye"></i> Preview
+                </button>
+                <button class="btn-outline" onclick="testLevel()">
+                  <i class="fas fa-vial"></i> Test
+                </button>
+                <button class="btn-outline" onclick="duplicateLevel()">
+                  <i class="fas fa-copy"></i> Duplicate
+                </button>
+                <button class="btn-outline" onclick="createNewLevel()">
+                  <i class="fas fa-plus"></i> New Level
+                </button>
+                <button class="btn-danger" onclick="deleteLevel()">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+            
+            <div class="editor-container">
+              <div class="editor-section">
+                <h4>Level Metadata</h4>
+                
+                <div class="form-group">
+                  <label for="levelTitle">Title:</label>
+                  <input type="text" id="levelTitle" class="form-input" placeholder="Enter level title">
+                </div>
+                
+                <div class="form-group">
+                  <label for="levelInstruction">Instruction:</label>
+                  <textarea id="levelInstruction" class="form-textarea" placeholder="Enter instructions for this level"></textarea>
+                </div>
+                
+                <div class="form-group">
+                  <label for="levelDifficulty">Difficulty:</label>
+                  <select id="levelDifficulty" class="form-input">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                    <option value="expert">Expert</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="levelTags">Tags (comma separated):</label>
+                  <input type="text" id="levelTags" class="form-input" placeholder="html, css, layout, form, etc.">
+                </div>
+                
+                <div class="form-group">
+                  <label style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="levelIsChallenge">
+                    <span>Mark as Challenge Level</span>
+                  </label>
+                </div>
+                
+                <div class="form-group" id="challengeTextGroup" style="display: none;">
+                  <label for="challengeText">Challenge Text:</label>
+                  <input type="text" id="challengeText" class="form-input" placeholder="Special challenge description">
+                </div>
+              </div>
+              
+              <div class="editor-section">
+                <h4>Level Content</h4>
+                
+                <div class="form-group">
+                  <label for="levelEditorText">Template/Code:</label>
+                  <textarea id="levelEditorText" class="form-textarea" style="min-height: 300px; font-family: 'Courier New', monospace;" placeholder="Enter level template or code..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                  <label for="levelRegex">Regex Check Pattern:</label>
+                  <div class="regex-tester">
+                    <input type="text" id="levelRegex" class="form-input" placeholder="/pattern/flags" style="font-family: monospace; background: #2d2d2d;">
+                    <div style="margin-top: 10px;">
+                      <button class="btn-small" onclick="testRegexPattern()">Test Regex</button>
+                      <div id="regexTestResult" class="regex-result" style="display: none;"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="levelSolution">Solution (Optional):</label>
+                  <textarea id="levelSolution" class="form-textarea" placeholder="Optional solution or hints" style="min-height: 80px;"></textarea>
+                </div>
+              </div>
+            </div>
+            
+            <div class="level-list-container" style="margin-top: 20px;">
+              <h4>All Levels in this Category (<span id="levelListCount">0</span>)</h4>
+              <div class="level-list" id="levelList">
+                <!-- Level list will be loaded here -->
+              </div>
+              <div class="pagination" id="levelPagination">
+                <!-- Pagination will be loaded here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analyticsTab" class="tab-content">
+          <h3>System Analytics & Reports</h3>
+          
+          <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+            <select id="analyticsPeriod" onchange="loadAnalytics()" style="padding: 10px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px;">
+              <option value="day">Last 24 Hours</option>
+              <option value="week">Last 7 Days</option>
+              <option value="month">Last 30 Days</option>
+              <option value="all">All Time</option>
+            </select>
+            
+            <button class="btn-primary" onclick="loadAnalytics()">
+              <i class="fas fa-sync-alt"></i> Refresh Analytics
+            </button>
+            
+            <button class="btn-outline" onclick="exportAnalytics()">
+              <i class="fas fa-file-export"></i> Export Report
+            </button>
+          </div>
+          
+          <div id="analyticsContent">
+            <!-- Analytics will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Tools Tab -->
+        <div id="toolsTab" class="tab-content">
+          <h3>System Tools & Maintenance</h3>
+          
+          <div class="tools-grid">
+            <div class="tool-card" onclick="exportAllData()">
+              <div class="tool-icon"><i class="fas fa-download"></i></div>
+              <div class="tool-title">Export All Data</div>
+              <div class="tool-desc">Backup users, levels, and settings</div>
+            </div>
+            
+            <div class="tool-card" onclick="importData()">
+              <div class="tool-icon"><i class="fas fa-upload"></i></div>
+              <div class="tool-title">Import Data</div>
+              <div class="tool-desc">Restore from backup file</div>
+            </div>
+            
+            <div class="tool-card" onclick="resetAllProgress()">
+              <div class="tool-icon"><i class="fas fa-redo"></i></div>
+              <div class="tool-title">Reset All Progress</div>
+              <div class="tool-desc">Clear all user progress</div>
+            </div>
+            
+            <div class="tool-card" onclick="createTestUsers()">
+              <div class="tool-icon"><i class="fas fa-vial"></i></div>
+              <div class="tool-title">Create Test Users</div>
+              <div class="tool-desc">Generate test accounts</div>
+            </div>
+            
+            <div class="tool-card" onclick="fixDataIssues()">
+              <div class="tool-icon"><i class="fas fa-wrench"></i></div>
+              <div class="tool-title">Fix Data Issues</div>
+              <div class="tool-desc">Repair corrupted data</div>
+            </div>
+            
+            <div class="tool-card" onclick="clearCache()">
+              <div class="tool-icon"><i class="fas fa-broom"></i></div>
+              <div class="tool-title">Clear Cache</div>
+              <div class="tool-desc">Clear all cached data</div>
+            </div>
+            
+            <div class="tool-card" onclick="generateSampleLevels()">
+              <div class="tool-icon"><i class="fas fa-magic"></i></div>
+              <div class="tool-title">Generate Sample Levels</div>
+              <div class="tool-desc">Create sample levels</div>
+            </div>
+            
+            <div class="tool-card" onclick="validateAllLevels()">
+              <div class="tool-icon"><i class="fas fa-check-circle"></i></div>
+              <div class="tool-title">Validate All Levels</div>
+              <div class="tool-desc">Check all levels for errors</div>
+            </div>
+          </div>
+
+          <div class="danger-zone">
+            <h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
+            <p>These actions cannot be undone. Proceed with extreme caution.</p>
+            <div class="danger-buttons">
+              <button class="btn-danger" onclick="clearAllData()">
+                <i class="fas fa-trash"></i> Clear ALL Data
+              </button>
+              <button class="btn-danger" onclick="deleteAllUsers()">
+                <i class="fas fa-users-slash"></i> Delete All Users
+              </button>
+              <button class="btn-danger" onclick="resetEverything()">
+                <i class="fas fa-bomb"></i> Reset Everything
+              </button>
+              <button class="btn-danger" onclick="deleteAllLevels()">
+                <i class="fas fa-code"></i> Delete All Levels
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- User Details Modal -->
+  <div id="userDetailsModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-user"></i> User Details</h2>
+        <button class="close-btn" onclick="closeUserModal()">×</button>
+      </div>
+      <div class="modal-body" id="userDetailsContent">
+        <!-- User details will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Level Preview Modal -->
+  <div id="levelPreviewModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 90%; max-height: 90vh;">
+      <div class="modal-header">
+        <h2><i class="fas fa-eye"></i> Level Preview</h2>
+        <button class="close-btn" onclick="closePreviewModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <iframe id="levelPreviewFrame" style="width: 100%; height: 70vh; border: none; border-radius: 8px;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="importModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-file-import"></i> Import Data</h2>
+        <button class="close-btn" onclick="closeImportModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Select backup file:</label>
+          <input type="file" id="importFile" accept=".json" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Import Options:</label>
+          <div style="margin-top: 10px;">
+            <label style="display: block; margin: 5px 0;">
+              <input type="checkbox" id="importUsers" checked> Users
+            </label>
+            <label style="display: block; margin: 5px 0;">
+              <input type="checkbox" id="importLevels" checked> Levels
+            </label>
+            <label style="display: block; margin: 5px 0;">
+              <input type="checkbox" id="importSettings" checked> Settings
+            </label>
+          </div>
+        </div>
+        <div style="margin-top: 20px;">
+          <button class="btn-primary" onclick="processImport()">
+            <i class="fas fa-upload"></i> Import Data
+          </button>
+          <button class="btn-outline" onclick="closeImportModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Admin variables
+    let currentAdmin = null;
+    let allUsers = {};
+    let filteredUsers = [];
+    let currentFilter = 'all';
+    let currentLevelPage = 1;
+    const levelsPerPage = 20;
+    
+    // Admin Levels Data (1500+ levels placeholder)
+    // In practice, this would be loaded from levels.js
+    window.levels = window.levels || {
+      html: [],
+      css: [],
+      js: []
+    };
+
+    // Initialize admin dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is admin
+      const userData = localStorage.getItem('codex_current_user');
+      const authCheck = document.getElementById('authCheck');
+      const adminDashboard = document.getElementById('adminDashboard');
+      
+      if (!userData) {
+        // No user logged in
+        authCheck.classList.remove('hidden');
+        return;
+      }
+      
+      try {
+        currentAdmin = JSON.parse(userData);
+        
+        if (!currentAdmin.isAdmin) {
+          // User is not admin
+          authCheck.classList.remove('hidden');
+          return;
+        }
+        
+        // User is admin - show dashboard
+        authCheck.classList.add('hidden');
+        adminDashboard.classList.remove('hidden');
+        
+        // Load admin data
+        initializeAdminDashboard();
+        
+      } catch (error) {
+        console.error('Error loading admin data:', error);
+        authCheck.classList.remove('hidden');
+      }
+    });
+
+    // Initialize admin dashboard
+    function initializeAdminDashboard() {
+      // Load users
+      allUsers = JSON.parse(localStorage.getItem('codex_users') || '{}');
+      filteredUsers = Object.values(allUsers).filter(u => u.username !== 'Admin');
+      
+      // Update admin name
+      document.getElementById('adminName').textContent = currentAdmin.username;
+      
+      // Load statistics
+      updateStats();
+      updateQuickStats();
+      
+      // Load user list
+      updateUserList();
+      
+      // Initialize level editor
+      initializeLevelEditor();
+      
+      // Load analytics
+      loadAnalytics();
+      
+      // Setup event listeners
+      setupEventListeners();
+      
+      // Check if levels.js is loaded
+      checkLevelsLoaded();
+    }
+
+    // Check if levels are loaded
+    function checkLevelsLoaded() {
+      // Wait for levels.js to load
+      const checkInterval = setInterval(() => {
+        if (window.levels && Object.keys(window.levels).length > 0) {
+          clearInterval(checkInterval);
+          
+          // Initialize level counts
+          updateLevelCounts();
+          
+          // Initialize level selector
+          populateLevelSelector();
+          
+          // Load first level
+          loadLevelForEdit();
+          
+          // Update level list
+          updateLevelList();
+        }
+      }, 100);
+      
+      // Timeout after 5 seconds
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        if (!window.levels || Object.keys(window.levels).length === 0) {
+          console.warn('levels.js not loaded, using placeholder data');
+          initializeSampleLevels();
+        }
+      }, 5000);
+    }
+
+    // Initialize sample levels if needed
+    function initializeSampleLevels() {
+      // Create sample levels if none exist
+      if (!window.levels.html || window.levels.html.length === 0) {
+        window.levels = {
+          html: Array(500).fill().map((_, i) => ({
+            title: `HTML Level ${i + 1}`,
+            template: `<!DOCTYPE html>\n<html>\n<head>\n  <title>HTML Level ${i + 1}</title>\n</head>\n<body>\n  <!-- Level ${i + 1} content -->\n</body>\n</html>`,
+            instruction: `Complete HTML Level ${i + 1}`,
+            check: /.*/,
+            difficulty: i < 100 ? 'beginner' : i < 300 ? 'intermediate' : i < 450 ? 'advanced' : 'expert',
+            tags: 'html, web',
+            isChallenge: i % 50 === 49
+          })),
+          
+          css: Array(500).fill().map((_, i) => ({
+            title: `CSS Level ${i + 1}`,
+            template: `/* CSS Level ${i + 1} */\nbody {\n  /* Add your styles here */\n}`,
+            instruction: `Complete CSS Level ${i + 1}`,
+            check: /.*/,
+            difficulty: i < 100 ? 'beginner' : i < 300 ? 'intermediate' : i < 450 ? 'advanced' : 'expert',
+            tags: 'css, styling',
+            isChallenge: i % 50 === 49
+          })),
+          
+          js: Array(500).fill().map((_, i) => ({
+            title: `JavaScript Level ${i + 1}`,
+            template: `// JavaScript Level ${i + 1}\nconsole.log("Start Level ${i + 1}");`,
+            instruction: `Complete JavaScript Level ${i + 1}`,
+            check: /.*/,
+            difficulty: i < 100 ? 'beginner' : i < 300 ? 'intermediate' : i < 450 ? 'advanced' : 'expert',
+            tags: 'javascript, programming',
+            isChallenge: i % 50 === 49
+          }))
+        };
+      }
+      
+      updateLevelCounts();
+      populateLevelSelector();
+      loadLevelForEdit();
+      updateLevelList();
+    }
+
+    // Update level counts
+    function updateLevelCounts() {
+      const htmlCount = window.levels.html ? window.levels.html.length : 0;
+      const cssCount = window.levels.css ? window.levels.css.length : 0;
+      const jsCount = window.levels.js ? window.levels.js.length : 0;
+      const totalCount = htmlCount + cssCount + jsCount;
+      
+      document.getElementById('htmlLevelCount').textContent = htmlCount;
+      document.getElementById('cssLevelCount').textContent = cssCount;
+      document.getElementById('jsLevelCount').textContent = jsCount;
+      document.getElementById('totalLevels').textContent = totalCount;
+      document.getElementById('totalLevelsBadge').textContent = `${totalCount} Levels`;
+      
+      // Count challenge levels
+      let challengeCount = 0;
+      ['html', 'css', 'js'].forEach(lang => {
+        if (window.levels[lang]) {
+          challengeCount += window.levels[lang].filter(l => l.isChallenge).length;
+        }
+      });
+      document.getElementById('challengeLevels').textContent = challengeCount;
+      
+      // Update progress bars (simulated)
+      document.getElementById('htmlProgressBar').style.width = '75%';
+      document.getElementById('cssProgressBar').style.width = '60%';
+      document.getElementById('jsProgressBar').style.width = '45%';
+    }
+
+    // Update statistics
+    function updateStats() {
+      const totalUsers = filteredUsers.length;
+      const activeToday = filteredUsers.filter(u => {
+        const today = new Date().toDateString();
+        return u.loginDates && u.loginDates.some(d => new Date(d).toDateString() === today);
+      }).length;
+      
+      const totalLogins = filteredUsers.reduce((sum, u) => sum + (u.loginCount || 0), 0);
+      const totalXP = filteredUsers.reduce((sum, u) => sum + (u.xp || 0), 0);
+      
+      const avgProgress = Math.round(filteredUsers.reduce((sum, u) => {
+        const progress = ((u.progress.html || 0) + (u.progress.css || 0) + (u.progress.js || 0)) / 60 * 100;
+        return sum + (progress || 0);
+      }, 0) / (filteredUsers.length || 1));
+      
+      const totalTime = filteredUsers.reduce((sum, u) => sum + (u.totalCourseTime || 0), 0);
+      const totalHours = Math.floor(totalTime / 3600);
+      const totalMinutes = Math.floor((totalTime % 3600) / 60);
+      
+      // Update admin stats text
+      document.getElementById('adminStats').innerHTML = `
+        Managing <strong>${totalUsers}</strong> users | 
+        <strong>${activeToday}</strong> active today | 
+        <strong>${totalLogins}</strong> total logins
+      `;
+      
+      // Update online users count
+      document.getElementById('usersOnline').textContent = activeToday;
+      document.getElementById('avgProgress').textContent = `${avgProgress}%`;
+      document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
+      
+      // Update stats grid
+      document.getElementById('statsGrid').innerHTML = `
+        <div class="admin-stat-card">
+          <h3>Total Users</h3>
+          <div class="value">${totalUsers}</div>
+          <div class="label">Registered accounts</div>
+        </div>
+        <div class="admin-stat-card">
+          <h3>Active Today</h3>
+          <div class="value">${activeToday}</div>
+          <div class="label">Logged in today</div>
+        </div>
+        <div class="admin-stat-card">
+          <h3>Total XP</h3>
+          <div class="value">${totalXP}</div>
+          <div class="label">Combined XP</div>
+        </div>
+        <div class="admin-stat-card">
+          <h3>Avg. Progress</h3>
+          <div class="value">${avgProgress}%</div>
+          <div class="label">Average completion</div>
+        </div>
+        <div class="admin-stat-card">
+          <h3>Total Time</h3>
+          <div class="value">${totalHours}h</div>
+          <div class="label">${totalMinutes}m total learning</div>
+        </div>
+        <div class="admin-stat-card">
+          <h3>Challenges</h3>
+          <div class="value">${filteredUsers.reduce((sum, u) => {
+            return sum + Object.values(u.challengesCompleted || {}).reduce((s, arr) => s + arr.length, 0);
+          }, 0)}</div>
+          <div class="label">Completed challenges</div>
+        </div>
+      `;
+    }
+
+    // Update quick stats
+    function updateQuickStats() {
+      const totalUsers = filteredUsers.length;
+      const activeToday = filteredUsers.filter(u => {
+        const today = new Date().toDateString();
+        return u.loginDates && u.loginDates.some(d => new Date(d).toDateString() === today);
+      }).length;
+      
+      const newUsers = filteredUsers.filter(u => {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return new Date(u.createdAt) > weekAgo;
+      }).length;
+      
+      const topUser = filteredUsers.reduce((top, user) => {
+        return (user.xp || 0) > (top.xp || 0) ? user : top;
+      }, { xp: 0 });
+      
+      document.getElementById('quickStats').innerHTML = `
+        <div class="quick-stat">
+          <i class="fas fa-users"></i>
+          <div class="quick-stat-value">${totalUsers}</div>
+          <div class="quick-stat-label">Total Users</div>
+        </div>
+        <div class="quick-stat">
+          <i class="fas fa-user-clock"></i>
+          <div class="quick-stat-value">${activeToday}</div>
+          <div class="quick-stat-label">Active Today</div>
+        </div>
+        <div class="quick-stat">
+          <i class="fas fa-user-plus"></i>
+          <div class="quick-stat-value">${newUsers}</div>
+          <div class="quick-stat-label">New This Week</div>
+        </div>
+        <div class="quick-stat">
+          <i class="fas fa-crown"></i>
+          <div class="quick-stat-value">${topUser.xp || 0}</div>
+          <div class="quick-stat-label">Top User XP</div>
+        </div>
+      `;
+    }
+
+    // Update user list
+    function updateUserList() {
+      document.getElementById('userCount').textContent = filteredUsers.length;
+      
+      const userListHTML = filteredUsers.map(user => {
+        const totalProgress = (user.progress.html || 0) + (user.progress.css || 0) + (user.progress.js || 0);
+        const progressPercent = Math.round((totalProgress / 60) * 100);
+        const level = Math.floor(totalProgress / 10) + 1;
+        const lastLogin = user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never';
+        
+        // Determine user status
+        let statusBadge = '';
+        if (user.isAdmin) {
+          statusBadge = '<span class="badge" style="background: #FF9800; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">Admin</span>';
+        } else if (progressPercent >= 75) {
+          statusBadge = '<span class="badge" style="background: #4CAF50; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">Advanced</span>';
+        } else if (progressPercent >= 50) {
+          statusBadge = '<span class="badge" style="background: #2196F3; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">Intermediate</span>';
+        } else if (progressPercent >= 25) {
+          statusBadge = '<span class="badge" style="background: #9C27B0; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">Beginner</span>';
+        }
+        
+        return `
+          <div class="user-card">
+            <div class="user-info">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="user-name">${user.username}</div>
+                ${statusBadge}
+              </div>
+              <div class="user-details">
+                Level ${level} | ${user.xp || 0} XP | Created: ${new Date(user.createdAt).toLocaleDateString()}
+              </div>
+              <div class="user-progress">
+                <span>HTML: ${user.progress.html || 0}/20</span>
+                <span>CSS: ${user.progress.css || 0}/20</span>
+                <span>JS: ${user.progress.js || 0}/20</span>
+              </div>
+              <div class="progress-bar-small">
+                <div class="progress-fill" style="width: ${progressPercent}%"></div>
+              </div>
+            </div>
+            <div class="user-actions">
+              <button class="admin-btn btn-view" onclick="viewUser('${user.username}')">
+                <i class="fas fa-eye"></i> View
+              </button>
+              <button class="admin-btn btn-edit" onclick="editUser('${user.username}')">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="admin-btn btn-reset" onclick="resetUser('${user.username}')">
+                <i class="fas fa-redo"></i> Reset
+              </button>
+              <button class="admin-btn btn-delete" onclick="deleteUser('${user.username}')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      document.getElementById('userList').innerHTML = userListHTML || '<p style="text-align: center; color: #888; padding: 40px;">No users found.</p>';
+    }
+
+    // Filter users
+    function filterUsers(filterType) {
+      currentFilter = filterType;
+      
+      // Update filter buttons
+      document.querySelectorAll('.user-filters .btn-small').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      switch(filterType) {
+        case 'all':
+          filteredUsers = Object.values(allUsers).filter(u => u.username !== 'Admin');
+          break;
+        case 'active':
+          const today = new Date().toDateString();
+          filteredUsers = Object.values(allUsers).filter(u => 
+            u.username !== 'Admin' && 
+            u.loginDates && 
+            u.loginDates.some(d => new Date(d).toDateString() === today)
+          );
+          break;
+        case 'admins':
+          filteredUsers = Object.values(allUsers).filter(u => u.isAdmin && u.username !== 'Admin');
+          break;
+        case 'beginners':
+          filteredUsers = Object.values(allUsers).filter(u => {
+            if (u.username === 'Admin') return false;
+            const totalProgress = (u.progress.html || 0) + (u.progress.css || 0) + (u.progress.js || 0);
+            const progressPercent = Math.round((totalProgress / 60) * 100);
+            return progressPercent < 25;
+          });
+          break;
+        case 'advanced':
+          filteredUsers = Object.values(allUsers).filter(u => {
+            if (u.username === 'Admin') return false;
+            const totalProgress = (u.progress.html || 0) + (u.progress.css || 0) + (u.progress.js || 0);
+            const progressPercent = Math.round((totalProgress / 60) * 100);
+            return progressPercent >= 50;
+          });
+          break;
+      }
+      
+      updateUserList();
+    }
+
+    // Sort user list
+    function sortUserList() {
+      const sortBy = document.getElementById('sortUsers').value;
+      
+      filteredUsers.sort((a, b) => {
+        switch(sortBy) {
+          case 'name':
+            return a.username.localeCompare(b.username);
+          case 'progress':
+            const progressA = (a.progress.html || 0) + (a.progress.css || 0) + (a.progress.js || 0);
+            const progressB = (b.progress.html || 0) + (b.progress.css || 0) + (b.progress.js || 0);
+            return progressB - progressA;
+          case 'xp':
+            return (b.xp || 0) - (a.xp || 0);
+          case 'recent':
+            return new Date(b.lastLogin || 0) - new Date(a.lastLogin || 0);
+          default:
+            return 0;
+        }
+      });
+      
+      updateUserList();
+    }
+
+    // User actions
+    function viewUser(username) {
+      const user = allUsers[username.toLowerCase()];
+      if (!user) return;
+      
+      const totalProgress = (user.progress.html || 0) + (user.progress.css || 0) + (user.progress.js || 0);
+      const progressPercent = Math.round((totalProgress / 60) * 100);
+      const challengesCompleted = Object.values(user.challengesCompleted || {}).reduce((sum, arr) => sum + arr.length, 0);
+      const totalTime = user.totalCourseTime || 0;
+      const hours = Math.floor(totalTime / 3600);
+      const minutes = Math.floor((totalTime % 3600) / 60);
+      const level = Math.floor(totalProgress / 10) + 1;
+      
+      // Calculate time spent per category
+      const timePerCategory = {
+        html: Math.round((user.courseTime?.html || 0) / 60),
+        css: Math.round((user.courseTime?.css || 0) / 60),
+        js: Math.round((user.courseTime?.js || 0) / 60)
+      };
+      
+      // Get recent activity
+      const recentLogins = user.loginDates ? 
+        user.loginDates.slice(-5).map(d => new Date(d).toLocaleString()).reverse() : 
+        [];
+      
+      document.getElementById('userDetailsContent').innerHTML = `
+        <h3><i class="fas fa-user"></i> ${user.username}</h3>
+        <div style="margin: 20px 0;">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+            <div>
+              <p><strong><i class="fas fa-calendar-plus"></i> Account Created:</strong></p>
+              <p>${new Date(user.createdAt).toLocaleString()}</p>
+            </div>
+            <div>
+              <p><strong><i class="fas fa-sign-in-alt"></i> Last Login:</strong></p>
+              <p>${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}</p>
+            </div>
+            <div>
+              <p><strong><i class="fas fa-signal"></i> Login Count:</strong></p>
+              <p>${user.loginCount || 0}</p>
+            </div>
+            <div>
+              <p><strong><i class="fas fa-clock"></i> Total Learning Time:</strong></p>
+              <p>${hours}h ${minutes}m</p>
+            </div>
+          </div>
+        </div>
+        
+        <h4><i class="fas fa-chart-line"></i> Progress Overview</h4>
+        <div style="margin: 15px 0;">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <div style="text-align: center; padding: 10px; background: var(--bg); border-radius: 8px;">
+              <div style="font-size: 1.2rem; font-weight: bold;">Level ${level}</div>
+              <div style="color: #888; font-size: 0.9rem;">Current Level</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: var(--bg); border-radius: 8px;">
+              <div style="font-size: 1.2rem; font-weight: bold;">${user.xp || 0}</div>
+              <div style="color: #888; font-size: 0.9rem;">Total XP</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: var(--bg); border-radius: 8px;">
+              <div style="font-size: 1.2rem; font-weight: bold;">${progressPercent}%</div>
+              <div style="color: #888; font-size: 0.9rem;">Overall Progress</div>
+            </div>
+          </div>
+        </div>
+        
+        <h4><i class="fas fa-code"></i> Category Progress</h4>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+          <div style="text-align: center; background: var(--bg); padding: 15px; border-radius: 8px;">
+            <div style="font-size: 1.5rem; font-weight: bold;">${user.progress.html || 0}/20</div>
+            <div style="color: #888;">HTML</div>
+            <div style="font-size: 0.8rem; margin-top: 5px;">${timePerCategory.html} min</div>
+          </div>
+          <div style="text-align: center; background: var(--bg); padding: 15px; border-radius: 8px;">
+            <div style="font-size: 1.5rem; font-weight: bold;">${user.progress.css || 0}/20</div>
+            <div style="color: #888;">CSS</div>
+            <div style="font-size: 0.8rem; margin-top: 5px;">${timePerCategory.css} min</div>
+          </div>
+          <div style="text-align: center; background: var(--bg); padding: 15px; border-radius: 8px;">
+            <div style="font-size: 1.5rem; font-weight: bold;">${user.progress.js || 0}/20</div>
+            <div style="color: #888;">JavaScript</div>
+            <div style="font-size: 0.8rem; margin-top: 5px;">${timePerCategory.js} min</div>
+          </div>
+        </div>
+        
+        <h4><i class="fas fa-trophy"></i> Achievements</h4>
+        <div style="margin: 15px 0;">
+          <p><strong>Challenges Completed:</strong> ${challengesCompleted}/12</p>
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <span class="badge" style="background: #4CAF50; color: white; padding: 5px 10px; border-radius: 15px;">
+              <i class="fas fa-star"></i> ${user.streak || 0} Day Streak
+            </span>
+            <span class="badge" style="background: #2196F3; color: white; padding: 5px 10px; border-radius: 15px;">
+              <i class="fas fa-medal"></i> Level ${level}
+            </span>
+          </div>
+        </div>
+        
+        ${recentLogins.length > 0 ? `
+          <h4><i class="fas fa-history"></i> Recent Activity</h4>
+          <div style="margin: 15px 0;">
+            <ul style="padding-left: 20px;">
+              ${recentLogins.map(login => `<li>${login}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+        
+        <div style="margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn-primary" onclick="editUserModal('${username}')">
+            <i class="fas fa-edit"></i> Edit User
+          </button>
+          <button class="btn-outline" onclick="resetUser('${username}')">
+            <i class="fas fa-redo"></i> Reset Progress
+          </button>
+          <button class="btn-danger" onclick="deleteUser('${username}')">
+            <i class="fas fa-trash"></i> Delete User
+          </button>
+        </div>
+      `;
+      
+      document.getElementById('userDetailsModal').classList.remove('hidden');
+    }
+
+    function editUserModal(username) {
+      const user = allUsers[username.toLowerCase()];
+      if (!user) return;
+      
+      const newXP = prompt(`Edit XP for ${username}:`, user.xp || 0);
+      if (newXP !== null && !isNaN(newXP)) {
+        user.xp = parseInt(newXP);
+        localStorage.setItem('codex_users', JSON.stringify(allUsers));
+        
+        // Update current user if it's the same
+        if (currentAdmin.username.toLowerCase() === username.toLowerCase()) {
+          currentAdmin.xp = parseInt(newXP);
+          localStorage.setItem('codex_current_user', JSON.stringify(currentAdmin));
+        }
+        
+        alert('User XP updated!');
+        initializeAdminDashboard();
+        closeUserModal();
+      }
+    }
+
+    function editUser(username) {
+      const user = allUsers[username.toLowerCase()];
+      if (!user) return;
+      
+      const newLevel = prompt(`Set level for ${username} (1-6):`, Math.floor(((user.progress.html || 0) + (user.progress.css || 0) + (user.progress.js || 0)) / 10) + 1);
+      if (newLevel !== null && !isNaN(newLevel) && newLevel >= 1 && newLevel <= 6) {
+        const totalProgress = (parseInt(newLevel) - 1) * 10;
+        const perLanguage = Math.floor(totalProgress / 3);
+        
+        user.progress = {
+          html: perLanguage,
+          css: perLanguage,
+          js: perLanguage
+        };
+        
+        localStorage.setItem('codex_users', JSON.stringify(allUsers));
+        alert('User level updated!');
+        initializeAdminDashboard();
+      }
+    }
+
+    function resetUser(username) {
+      if (confirm(`Reset progress for ${username}? This will set all progress to zero.`)) {
+        const user = allUsers[username.toLowerCase()];
+        if (user) {
+          user.progress = { html: 0, css: 0, js: 0 };
+          user.xp = 0;
+          user.challengesCompleted = {};
+          user.totalCourseTime = 0;
+          user.courseTime = { html: 0, css: 0, js: 0 };
+          
+          localStorage.setItem('codex_users', JSON.stringify(allUsers));
+          
+          // Update current user if it's the same
+          if (currentAdmin.username.toLowerCase() === username.toLowerCase()) {
+            currentAdmin.progress = { html: 0, css: 0, js: 0 };
+            currentAdmin.xp = 0;
+            currentAdmin.challengesCompleted = {};
+            localStorage.setItem('codex_current_user', JSON.stringify(currentAdmin));
+          }
+          
+          alert('User progress reset!');
+          initializeAdminDashboard();
+          closeUserModal();
+        }
+      }
+    }
+
+    function deleteUser(username) {
+      if (username.toLowerCase() === 'admin') {
+        alert('Cannot delete admin account!');
+        return;
+      }
+      
+      if (confirm(`Permanently delete user ${username}? This action cannot be undone!`)) {
+        delete allUsers[username.toLowerCase()];
+        localStorage.setItem('codex_users', JSON.stringify(allUsers));
+        
+        alert('User deleted!');
+        initializeAdminDashboard();
+        closeUserModal();
+      }
+    }
+
+    function closeUserModal() {
+      document.getElementById('userDetailsModal').classList.add('hidden');
+    }
+
+    // Initialize level editor
+    function initializeLevelEditor() {
+      const challengeCheckbox = document.getElementById('levelIsChallenge');
+      if (challengeCheckbox) {
+        challengeCheckbox.addEventListener('change', function() {
+          document.getElementById('challengeTextGroup').style.display = 
+            this.checked ? 'block' : 'none';
+        });
+      }
+    }
+
+    // Populate level selector
+    function populateLevelSelector() {
+      const levelNumberSelect = document.getElementById('levelNumber');
+      if (!levelNumberSelect) return;
+      
+      // Clear existing options
+      levelNumberSelect.innerHTML = '';
+      
+      const lang = document.getElementById('levelLang').value;
+      const levels = window.levels[lang] || [];
+      
+      // Add options for all levels
+      levels.forEach((level, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        
+        let levelTitle = `${index + 1}. ${level.title || `Level ${index + 1}`}`;
+        if (level.isChallenge) {
+          levelTitle = `⭐ ${levelTitle}`;
+        }
+        
+        option.textContent = levelTitle;
+        levelNumberSelect.appendChild(option);
+      });
+      
+      // Update level list count
+      updateLevelList();
+    }
+
+    // Load level for editing
+    function loadLevelForEdit() {
+      const lang = document.getElementById('levelLang').value;
+      const levelNum = parseInt(document.getElementById('levelNumber').value);
+      
+      if (window.levels && window.levels[lang] && window.levels[lang][levelNum]) {
+        const level = window.levels[lang][levelNum];
+        
+        // Update form fields
+        document.getElementById('levelTitle').value = level.title || '';
+        document.getElementById('levelInstruction').value = level.instruction || '';
+        document.getElementById('levelEditorText').value = level.template || '';
+        document.getElementById('levelRegex').value = level.check ? level.check.source : '';
+        document.getElementById('levelSolution').value = level.solution || '';
+        document.getElementById('levelTags').value = level.tags || '';
+        
+        // Set difficulty
+        document.getElementById('levelDifficulty').value = level.difficulty || 'beginner';
+        
+        // Set challenge checkbox
+        const isChallenge = level.isChallenge || false;
+        document.getElementById('levelIsChallenge').checked = isChallenge;
+        document.getElementById('challengeTextGroup').style.display = isChallenge ? 'block' : 'none';
+        document.getElementById('challengeText').value = level.challengeText || '';
+        
+        // Highlight selected level in list
+        highlightSelectedLevel(levelNum);
+      }
+    }
+
+    // Highlight selected level in list
+    function highlightSelectedLevel(levelNum) {
+      const levelItems = document.querySelectorAll('.level-list-item');
+      levelItems.forEach(item => {
+        item.classList.remove('selected');
+        if (parseInt(item.dataset.index) === levelNum) {
+          item.classList.add('selected');
+          // Scroll into view
+          item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    }
+
+    // Save level changes
+    function saveLevelChanges() {
+      const lang = document.getElementById('levelLang').value;
+      const levelNum = parseInt(document.getElementById('levelNumber').value);
+      
+      if (window.levels && window.levels[lang] && window.levels[lang][levelNum]) {
+        const level = window.levels[lang][levelNum];
+        
+        // Update level data
+        level.title = document.getElementById('levelTitle').value;
+        level.instruction = document.getElementById('levelInstruction').value;
+        level.template = document.getElementById('levelEditorText').value;
+        level.difficulty = document.getElementById('levelDifficulty').value;
+        level.tags = document.getElementById('levelTags').value;
+        level.isChallenge = document.getElementById('levelIsChallenge').checked;
+        level.challengeText = document.getElementById('challengeText').value;
+        level.solution = document.getElementById('levelSolution').value;
+        
+        // Update regex if provided
+        const regexInput = document.getElementById('levelRegex').value;
+        if (regexInput) {
+          try {
+            // Extract flags from regex string
+            const regexParts = regexInput.match(/^\/(.*)\/([gimsuy]*)$/);
+            if (regexParts) {
+              level.check = new RegExp(regexParts[1], regexParts[2]);
+            } else {
+              level.check = new RegExp(regexInput);
+            }
+          } catch (e) {
+            alert(`Regex Error: ${e.message}`);
+            return;
+          }
+        }
+        
+        // Update level list
+        updateLevelList();
+        
+        // Update level selector
+        updateLevelOption(levelNum);
+        
+        alert(`✅ Level ${levelNum + 1} saved successfully!`);
+      }
+    }
+
+    // Update level option in selector
+    function updateLevelOption(levelNum) {
+      const lang = document.getElementById('levelLang').value;
+      const level = window.levels[lang][levelNum];
+      const option = document.getElementById('levelNumber').options[levelNum];
+      
+      if (option && level) {
+        let levelTitle = `${levelNum + 1}. ${level.title || `Level ${levelNum + 1}`}`;
+        if (level.isChallenge) {
+          levelTitle = `⭐ ${levelTitle}`;
+        }
+        option.textContent = levelTitle;
+      }
+    }
+
+    // Reset level changes
+    function resetLevelChanges() {
+      if (confirm('Reset all changes to this level?')) {
+        loadLevelForEdit();
+      }
+    }
+
+    // Preview level
+    function previewLevel() {
+      const lang = document.getElementById('levelLang').value;
+      const levelNum = parseInt(document.getElementById('levelNumber').value);
+      
+      if (window.levels && window.levels[lang] && window.levels[lang][levelNum]) {
+        const level = window.levels[lang][levelNum];
+        const template = document.getElementById('levelEditorText').value || level.template;
+        
+        let previewHTML = '';
+        if (lang === 'html') {
+          previewHTML = template;
+        } else if (lang === 'css') {
+          previewHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>CSS Preview - ${level.title}</title>
+              <style>
+                ${template}
+              </style>
+            </head>
+            <body>
+              <h1>CSS Preview: ${level.title}</h1>
+              <p>This is a paragraph to test CSS styles.</p>
+              <button class="test-btn">Test Button</button>
+              <div class="test-box">Test div with class</div>
+              <div id="test-id">Test div with ID</div>
+              <ul>
+                <li>List item 1</li>
+                <li>List item 2</li>
+                <li>List item 3</li>
+              </ul>
+            </body>
+            </html>
+          `;
+        } else if (lang === 'js') {
+          previewHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>JS Preview - ${level.title}</title>
+              <style>
+                body { 
+                  font-family: Arial, sans-serif; 
+                  padding: 20px; 
+                  background: #f5f5f5;
+                }
+                #output { 
+                  background: white; 
+                  padding: 15px; 
+                  border-radius: 5px; 
+                  margin: 20px 0; 
+                  min-height: 100px;
+                  border-left: 4px solid #4CAF50;
+                }
+                button { 
+                  margin: 5px; 
+                  padding: 10px 15px; 
+                  background: #4CAF50; 
+                  color: white; 
+                  border: none; 
+                  border-radius: 4px; 
+                  cursor: pointer;
+                }
+                button:hover { background: #45a049; }
+                h1 { color: #333; }
+              </style>
+            </head>
+            <body>
+              <h1>${level.title}</h1>
+              <p><strong>Instruction:</strong> ${level.instruction || 'Complete the JavaScript challenge'}</p>
+              
+              <div id="controls">
+                <button onclick="runCode()">▶ Run Code</button>
+                <button onclick="clearOutput()">🗑 Clear Output</button>
+                <button onclick="testSolution()">🧪 Test Solution</button>
+              </div>
+              
+              <div id="output">Output will appear here...</div>
+              
+              <script>
+                const output = document.getElementById('output');
+                let originalConsole = {};
+                
+                // Save original console methods
+                ['log', 'error', 'warn', 'info'].forEach(method => {
+                  originalConsole[method] = console[method];
+                });
+                
+                // Override console methods
+                console.log = function(...args) {
+                  output.innerHTML += '<div style="color: #4CAF50;">[LOG] ' + args.join(' ') + '</div>';
+                  originalConsole.log.apply(console, args);
+                };
+                
+                console.error = function(...args) {
+                  output.innerHTML += '<div style="color: #f44336;">[ERROR] ' + args.join(' ') + '</div>';
+                  originalConsole.error.apply(console, args);
+                };
+                
+                console.warn = function(...args) {
+                  output.innerHTML += '<div style="color: #ff9800;">[WARN] ' + args.join(' ') + '</div>';
+                  originalConsole.warn.apply(console, args);
+                };
+                
+                console.info = function(...args) {
+                  output.innerHTML += '<div style="color: #2196F3;">[INFO] ' + args.join(' ') + '</div>';
+                  originalConsole.info.apply(console, args);
+                };
+                
+                function runCode() {
+                  output.innerHTML = '<div style="color: #888;">Running code...</div>';
+                  try {
+                    ${template}
+                  } catch(e) {
+                    console.error('Runtime Error:', e.message);
+                  }
+                }
+                
+                function clearOutput() {
+                  output.innerHTML = '<div style="color: #888;">Output cleared.</div>';
+                }
+                
+                function testSolution() {
+                  output.innerHTML = '<div style="color: #888;">Testing solution...</div>';
+                  // Here you would add actual solution testing logic
+                  setTimeout(() => {
+                    output.innerHTML += '<div style="color: #4CAF50; font-weight: bold;">✅ Test completed (simulated)</div>';
+                  }, 1000);
+                }
+                
+                // Auto-run after a short delay
+                setTimeout(runCode, 500);
+              <\/script>
+            </body>
+            </html>
+          `;
+        }
+        
+        document.getElementById('levelPreviewFrame').srcdoc = previewHTML;
+        document.getElementById('levelPreviewModal').classList.remove('hidden');
+      }
+    }
+
+    // Close preview modal
+    function closePreviewModal() {
+      document.getElementById('levelPreviewModal').classList.add('hidden');
+    }
+
+    // Test regex pattern
+    function testRegexPattern() {
+      const regexInput = document.getElementById('levelRegex').value;
+      const template = document.getElementById('levelEditorText').value;
+      const resultDiv = document.getElementById('regexTestResult');
+      
+      if (!regexInput) {
+        alert('Please enter a regex pattern first.');
+        return;
+      }
+      
+      try {
+        // Extract flags from regex string
+        const regexParts = regexInput.match(/^\/(.*)\/([gimsuy]*)$/);
+        let regex;
+        
+        if (regexParts) {
+          regex = new RegExp(regexParts[1], regexParts[2]);
+        } else {
+          regex = new RegExp(regexInput);
+        }
+        
+        const testResult = regex.test(template);
+        
+        resultDiv.innerHTML = testResult ? 
+          '<i class="fas fa-check-circle"></i> Regex matches the template!' :
+          '<i class="fas fa-times-circle"></i> Regex does NOT match the template!';
+        resultDiv.className = `regex-result ${testResult ? 'regex-success' : 'regex-error'}`;
+        resultDiv.style.display = 'block';
+        
+      } catch (e) {
+        resultDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Regex Error: ${e.message}`;
+        resultDiv.className = 'regex-result regex-error';
+        resultDiv.style.display = 'block';
+      }
+    }
+
+    // Test level
+    function testLevel() {
+      const lang = document.getElementById('levelLang').value;
+      const levelNum = parseInt(document.getElementById('levelNumber').value);
+      
+      if (window.levels && window.levels[lang] && window.levels[lang][levelNum]) {
+        const level = window.levels[lang][levelNum];
+        const template = document.getElementById('levelEditorText').value || level.template;
+        const regexInput = document.getElementById('levelRegex').value;
+        
+        if (!regexInput && !level.check) {
+          alert('No regex pattern defined for testing.');
+          return;
+        }
+        
+        try {
+          let regex;
+          if (regexInput) {
+            const regexParts = regexInput.match(/^\/(.*)\/([gimsuy]*)$/);
+            if (regexParts) {
+              regex = new RegExp(regexParts[1], regexParts[2]);
+            } else {
+              regex = new RegExp(regexInput);
+            }
+          } else {
+            regex = level.check;
+          }
+          
+          const testResult = regex.test(template);
+          
+          if (testResult) {
+            alert(`✅ TEST PASSED!\n\nRegex pattern matches the template.\n\nPattern: ${regex.source}`);
+          } else {
+            alert(`❌ TEST FAILED!\n\nRegex pattern does NOT match the template.\n\nPattern: ${regex.source}\n\nCheck your template and try again.`);
+          }
+        } catch (e) {
+          alert(`⚠️ Regex Error: ${e.message}`);
+        }
+      }
+    }
+
+    // Duplicate level
+    function duplicateLevel() {
+      const lang = document.getElementById('levelLang').value;
+      const levelNum = parseInt(document.getElementById('levelNumber').value);
+      
+      if (window.levels && window.levels[lang] && window.levels[lang][levelNum]) {
+        const originalLevel = window.levels[lang][levelNum];
+        
+        // Create a deep copy
+        const newLevel = JSON.parse(JSON.stringify(originalLevel));
+        newLevel.title = originalLevel.title + ' (Copy)';
+        
+        // Ask where to insert
+        const position = prompt(
+          `Duplicate level ${levelNum + 1}?\n\nEnter position to insert (1-${window.levels[lang].length + 1}):\nLeave blank to insert after current level.`,
+          levelNum + 2
+        );
+        
+        let insertPos;
+        if (position === null) return;
+        
+        if (position === '') {
+          insertPos = levelNum + 1;
+        } else if (!isNaN(position) && position >= 1 && position <= window.levels[lang].length + 1) {
+          insertPos = parseInt(position) - 1;
+        } else {
+          alert('Invalid position. Please enter a number between 1 and ' + (window.levels[lang].length + 1));
+          return;
+        }
+        
+        // Insert the duplicated level
+        window.levels[lang].splice(insertPos, 0, newLevel);
+        
+        // Update UI
+        populateLevelSelector();
+        updateLevelList();
+        
+        // Select the new level
+        document.getElementById('levelNumber').value = insertPos;
+        loadLevelForEdit();
+        
+        alert(`✅ Level duplicated and inserted at position ${insertPos + 1}!`);
+      }
+    }
+
+    // Create new level
+    function createNewLevel() {
+      const lang = document.getElementById('levelLang').value;
+      const levels = window.levels[lang] || [];
+      
+      // Create new level object
+      const newLevel = {
+        title: `New ${lang.toUpperCase()} Level`,
+        template: lang === 'html' ? '<!DOCTYPE html>\n<html>\n<head>\n  <title>New Level</title>\n</head>\n<body>\n  <!-- Add your HTML here -->\n</body>\n</html>' :
+                lang === 'css' ? '/* Add your CSS here */\nbody {\n  /* Your styles */\n}' :
+                '// Add your JavaScript here\nconsole.log("Hello World");',
+        instruction: 'Complete this level.',
+        check: /.*/,
+        difficulty: 'beginner',
+        tags: lang,
+        isChallenge: false
+      };
+      
+      // Ask for position
+      const position = prompt(
+        `Create new ${lang.toUpperCase()} level?\n\nEnter position to insert (1-${levels.length + 1}):\nLeave blank to add at the end.`,
+        levels.length + 1
+      );
+      
+      let insertPos;
+      if (position === null) return;
+      
+      if (position === '') {
+        insertPos = levels.length;
+      } else if (!isNaN(position) && position >= 1 && position <= levels.length + 1) {
+        insertPos = parseInt(position) - 1;
+      } else {
+        alert('Invalid position. Please enter a number between 1 and ' + (levels.length + 1));
+        return;
+      }
+      
+      // Insert the new level
+      window.levels[lang].splice(insertPos, 0, newLevel);
+      
+      // Update UI
+      populateLevelSelector();
+      updateLevelList();
+      
+      // Select the new level
+      document.getElementById('levelNumber').value = insertPos;
+      loadLevelForEdit();
+      
+      alert(`✅ New level created at position ${insertPos + 1}!`);
+    }
+
+    // Delete level
+    function deleteLevel() {
+      const lang = document.getElementById('levelLang').value;
+      const levelNum = parseInt(document.getElementById('levelNumber').value);
+      
+      if (window.levels && window.levels[lang] && window.levels[lang][levelNum]) {
+        const level = window.levels[lang][levelNum];
+        
+        if (!confirm(`⚠️ DELETE LEVEL?\n\nAre you sure you want to delete:\n\n${levelNum + 1}. ${level.title}\n\nThis action cannot be undone!`)) {
+          return;
+        }
+        
+        // Remove the level
+        window.levels[lang].splice(levelNum, 1);
+        
+        // Update UI
+        populateLevelSelector();
+        updateLevelList();
+        
+        // Select next level (or previous if at end)
+        const newIndex = Math.min(levelNum, window.levels[lang].length - 1);
+        if (newIndex >= 0) {
+          document.getElementById('levelNumber').value = newIndex;
+          loadLevelForEdit();
+        } else {
+          // No levels left, clear editor
+          document.getElementById('levelTitle').value = '';
+          document.getElementById('levelEditorText').value = '';
+        }
+        
+        alert(`✅ Level ${levelNum + 1} deleted!`);
+      }
+    }
+
+    // Update level list
+    function updateLevelList() {
+      const lang = document.getElementById('levelLang').value;
+      const category = document.getElementById('levelCategory').value;
+      const searchTerm = document.getElementById('levelSearch').value.toLowerCase();
+      const levels = window.levels[lang] || [];
+      
+      // Filter levels
+      let filteredLevels = levels;
+      
+      if (category !== 'all') {
+        filteredLevels = filteredLevels.filter(level => {
+          if (category === 'challenge') return level.isChallenge;
+          return level.difficulty === category;
+        });
+      }
+      
+      if (searchTerm) {
+        filteredLevels = filteredLevels.filter(level => 
+          level.title.toLowerCase().includes(searchTerm) ||
+          level.instruction.toLowerCase().includes(searchTerm) ||
+          (level.tags && level.tags.toLowerCase().includes(searchTerm))
+        );
+      }
+      
+      // Update count
+      document.getElementById('levelListCount').textContent = filteredLevels.length;
+      
+      // Calculate pagination
+      const totalPages = Math.ceil(filteredLevels.length / levelsPerPage);
+      const startIndex = (currentLevelPage - 1) * levelsPerPage;
+      const endIndex = Math.min(startIndex + levelsPerPage, filteredLevels.length);
+      const paginatedLevels = filteredLevels.slice(startIndex, endIndex);
+      
+      // Generate level list HTML
+      let levelListHTML = '';
+      
+      paginatedLevels.forEach((level, index) => {
+        const actualIndex = levels.indexOf(level);
+        const isSelected = actualIndex === parseInt(document.getElementById('levelNumber').value);
+        
+        levelListHTML += `
+          <div class="level-list-item ${isSelected ? 'selected' : ''}" 
+               data-index="${actualIndex}"
+               onclick="selectLevelFromList(${actualIndex})">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong>${actualIndex + 1}. ${level.title}</strong>
+                ${level.isChallenge ? '<span class="challenge-badge">⭐ Challenge</span>' : ''}
+                <span class="difficulty-badge difficulty-${level.difficulty || 'beginner'}">
+                  ${level.difficulty || 'beginner'}
+                </span>
+              </div>
+              <div style="font-size: 0.9rem; color: #888;">
+                ${level.tags || 'No tags'}
+              </div>
+            </div>
+            <div style="font-size: 0.9rem; margin-top: 5px; color: #aaa;">
+              ${level.instruction.substring(0, 100)}${level.instruction.length > 100 ? '...' : ''}
+            </div>
+          </div>
+        `;
+      });
+      
+      if (levelListHTML === '') {
+        levelListHTML = '<p style="text-align: center; color: #888; padding: 40px;">No levels found.</p>';
+      }
+      
+      document.getElementById('levelList').innerHTML = levelListHTML;
+      
+      // Update pagination
+      updatePagination(totalPages);
+    }
+
+    // Select level from list
+    function selectLevelFromList(index) {
+      document.getElementById('levelNumber').value = index;
+      loadLevelForEdit();
+    }
+
+    // Update pagination
+    function updatePagination(totalPages) {
+      const paginationDiv = document.getElementById('levelPagination');
+      
+      if (totalPages <= 1) {
+        paginationDiv.innerHTML = '';
+        return;
+      }
+      
+      let paginationHTML = `
+        <button class="page-btn" onclick="changeLevelPage(${currentLevelPage - 1})" ${currentLevelPage === 1 ? 'disabled' : ''}>
+          <i class="fas fa-chevron-left"></i> Previous
+        </button>
+        <span style="padding: 0 10px;">
+          Page ${currentLevelPage} of ${totalPages}
+        </span>
+        <button class="page-btn" onclick="changeLevelPage(${currentLevelPage + 1})" ${currentLevelPage === totalPages ? 'disabled' : ''}>
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+        <select onchange="changeLevelsPerPage(this.value)" style="margin-left: 10px; padding: 5px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 5px;">
+          <option value="10" ${levelsPerPage === 10 ? 'selected' : ''}>10 per page</option>
+          <option value="20" ${levelsPerPage === 20 ? 'selected' : ''}>20 per page</option>
+          <option value="50" ${levelsPerPage === 50 ? 'selected' : ''}>50 per page</option>
+          <option value="100" ${levelsPerPage === 100 ? 'selected' : ''}>100 per page</option>
+        </select>
+      `;
+      
+      paginationDiv.innerHTML = paginationHTML;
+    }
+
+    // Change level page
+    function changeLevelPage(page) {
+      if (page < 1) return;
+      
+      const lang = document.getElementById('levelLang').value;
+      const levels = window.levels[lang] || [];
+      const totalPages = Math.ceil(levels.length / levelsPerPage);
+      
+      if (page > totalPages) return;
+      
+      currentLevelPage = page;
+      updateLevelList();
+    }
+
+    // Change items per page
+    function changeLevelsPerPage(newPerPage) {
+      levelsPerPage = parseInt(newPerPage);
+      currentLevelPage = 1;
+      updateLevelList();
+    }
+
+    // Filter levels by category
+    function filterLevelsByCategory() {
+      currentLevelPage = 1;
+      updateLevelList();
+    }
+
+    // Search levels
+    function searchLevels() {
+      currentLevelPage = 1;
+      updateLevelList();
+    }
+
+    // Load analytics
+    function loadAnalytics() {
+      const period = document.getElementById('analyticsPeriod').value;
+      
+      // Calculate analytics data
+      const totalUsers = filteredUsers.length;
+      const activeToday = filteredUsers.filter(u => {
+        const today = new Date().toDateString();
+        return u.loginDates && u.loginDates.some(d => new Date(d).toDateString() === today);
+      }).length;
+      
+      const totalLevelCompletions = filteredUsers.reduce((sum, user) => {
+        return sum + (user.progress.html || 0) + (user.progress.css || 0) + (user.progress.js || 0);
+      }, 0);
+      
+      const avgProgress = Math.round(filteredUsers.reduce((sum, u) => {
+        const progress = ((u.progress.html || 0) + (u.progress.css || 0) + (u.progress.js || 0)) / 60 * 100;
+        return sum + (progress || 0);
+      }, 0) / (filteredUsers.length || 1));
+      
+      // Calculate level completion stats
+      const levelStats = {
+        html: { total: 0, completed: 0 },
+        css: { total: 0, completed: 0 },
+        js: { total: 0, completed: 0 }
+      };
+      
+      ['html', 'css', 'js'].forEach(lang => {
+        levelStats[lang].total = window.levels[lang] ? window.levels[lang].length : 0;
+        levelStats[lang].completed = filteredUsers.reduce((sum, user) => 
+          sum + (user.progress[lang] || 0), 0);
+      });
+      
+      // Find most popular level (simplified)
+      const mostPopular = {
+        category: 'HTML',
+        level: 1,
+        completions: Math.max(levelStats.html.completed, levelStats.css.completed, levelStats.js.completed)
+      };
+      
+      document.getElementById('analyticsContent').innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+          <div style="background: var(--bg); padding: 20px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">${totalUsers}</div>
+            <div style="color: #888; margin-top: 5px;">Total Users</div>
+          </div>
+          <div style="background: var(--bg); padding: 20px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 2rem; font-weight: bold; color: #4CAF50;">${activeToday}</div>
+            <div style="color: #888; margin-top: 5px;">Active Today</div>
+          </div>
+          <div style="background: var(--bg); padding: 20px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 2rem; font-weight: bold; color: #2196F3;">${totalLevelCompletions}</div>
+            <div style="color: #888; margin-top: 5px;">Level Completions</div>
+          </div>
+          <div style="background: var(--bg); padding: 20px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 2rem; font-weight: bold; color: #FF9800;">${avgProgress}%</div>
+            <div style="color: #888; margin-top: 5px;">Avg. Progress</div>
+          </div>
+        </div>
+        
+        <h4 style="margin-top: 30px;">📊 Level Completion Statistics</h4>
+        <div style="background: var(--bg); padding: 20px; border-radius: 10px; margin: 20px 0;">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div>
+              <h5>HTML Levels</h5>
+              <div style="font-size: 1.5rem; font-weight: bold;">${levelStats.html.completed} / ${levelStats.html.total}</div>
+              <div style="height: 10px; background: var(--gray); border-radius: 5px; margin-top: 10px; overflow: hidden;">
+                <div style="width: ${levelStats.html.total ? (levelStats.html.completed / (levelStats.html.total * totalUsers) * 100) : 0}%; height: 100%; background: var(--accent);"></div>
+              </div>
+              <div style="font-size: 0.9rem; color: #888; margin-top: 5px;">
+                ${levelStats.html.total ? Math.round(levelStats.html.completed / (levelStats.html.total * totalUsers) * 100) : 0}% completion rate
+              </div>
+            </div>
+            <div>
+              <h5>CSS Levels</h5>
+              <div style="font-size: 1.5rem; font-weight: bold;">${levelStats.css.completed} / ${levelStats.css.total}</div>
+              <div style="height: 10px; background: var(--gray); border-radius: 5px; margin-top: 10px; overflow: hidden;">
+                <div style="width: ${levelStats.css.total ? (levelStats.css.completed / (levelStats.css.total * totalUsers) * 100) : 0}%; height: 100%; background: #2196F3;"></div>
+              </div>
+              <div style="font-size: 0.9rem; color: #888; margin-top: 5px;">
+                ${levelStats.css.total ? Math.round(levelStats.css.completed / (levelStats.css.total * totalUsers) * 100) : 0}% completion rate
+              </div>
+            </div>
+            <div>
+              <h5>JavaScript Levels</h5>
+              <div style="font-size: 1.5rem; font-weight: bold;">${levelStats.js.completed} / ${levelStats.js.total}</div>
+              <div style="height: 10px; background: var(--gray); border-radius: 5px; margin-top: 10px; overflow: hidden;">
+                <div style="width: ${levelStats.js.total ? (levelStats.js.completed / (levelStats.js.total * totalUsers) * 100) : 0}%; height: 100%; background: #FF9800;"></div>
+              </div>
+              <div style="font-size: 0.9rem; color: #888; margin-top: 5px;">
+                ${levelStats.js.total ? Math.round(levelStats.js.completed / (levelStats.js.total * totalUsers) * 100) : 0}% completion rate
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <h4 style="margin-top: 30px;">👥 User Engagement</h4>
+        <div style="background: var(--bg); padding: 20px; border-radius: 10px; margin: 20px 0;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div>
+              <div style="font-size: 1.2rem; font-weight: bold;">${filteredUsers.filter(u => u.loginCount > 10).length}</div>
+              <div style="color: #888; font-size: 0.9rem;">Active Users (>10 logins)</div>
+            </div>
+            <div>
+              <div style="font-size: 1.2rem; font-weight: bold;">${Math.round(filteredUsers.reduce((sum, u) => sum + (u.totalCourseTime || 0), 0) / 3600)}</div>
+              <div style="color: #888; font-size: 0.9rem;">Total Learning Hours</div>
+            </div>
+            <div>
+              <div style="font-size: 1.2rem; font-weight: bold;">${Math.round(filteredUsers.reduce((sum, u) => sum + (u.totalCourseTime || 0), 0) / 3600 / filteredUsers.length) || 0}</div>
+              <div style="color: #888; font-size: 0.9rem;">Avg. Hours per User</div>
+            </div>
+            <div>
+              <div style="font-size: 1.2rem; font-weight: bold;">${mostPopular.completions}</div>
+              <div style="color: #888; font-size: 0.9rem;">Most Completed Level</div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center; color: #888; font-size: 0.9rem;">
+          <i class="fas fa-info-circle"></i> Analytics period: ${period === 'day' ? 'Last 24 hours' : period === 'week' ? 'Last 7 days' : period === 'month' ? 'Last 30 days' : 'All time'}
+        </div>
+      `;
+    }
+
+    // Export analytics
+    function exportAnalytics() {
+      alert('Exporting analytics report... (This would generate a downloadable report)');
+    }
+
+    // System tools functions
+    function exportAllData() {
+      const data = {
+        users: allUsers,
+        levels: window.levels,
+        systemInfo: {
+          totalHTMLLevels: window.levels.html ? window.levels.html.length : 0,
+          totalCSSLevels: window.levels.css ? window.levels.css.length : 0,
+          totalJSLevels: window.levels.js ? window.levels.js.length : 0,
+          totalLevels: (window.levels.html ? window.levels.html.length : 0) + 
+                     (window.levels.css ? window.levels.css.length : 0) + 
+                     (window.levels.js ? window.levels.js.length : 0),
+          exportDate: new Date().toISOString(),
+          exportedBy: currentAdmin ? currentAdmin.username : 'Admin'
+        }
+      };
+      
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = `codex-backup-full-${new Date().toISOString().slice(0,10)}.json`;
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+      
+      alert(`✅ Data exported successfully!\n\nIncluding:\n- ${Object.keys(data.users).length} users\n- ${data.systemInfo.totalLevels} total levels\n- System configuration`);
+    }
+
+    function importData() {
+      document.getElementById('importModal').classList.remove('hidden');
+    }
+
+    function closeImportModal() {
+      document.getElementById('importModal').classList.add('hidden');
+    }
+
+    function processImport() {
+      const fileInput = document.getElementById('importFile');
+      if (!fileInput.files.length) {
+        alert('Please select a file to import.');
+        return;
+      }
+      
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          const importUsers = document.getElementById('importUsers').checked;
+          const importLevels = document.getElementById('importLevels').checked;
+          const importSettings = document.getElementById('importSettings').checked;
+          
+          if (importUsers && data.users) {
+            localStorage.setItem('codex_users', JSON.stringify(data.users));
+          }
+          
+          if (importLevels && data.levels) {
+            window.levels = data.levels;
+          }
+          
+          if (importSettings && data.settings) {
+            // Import settings if any
+          }
+          
+          alert('✅ Data imported successfully! Refreshing dashboard...');
+          closeImportModal();
+          initializeAdminDashboard();
+          
+        } catch (error) {
+          alert('❌ Error importing data: ' + error.message);
+        }
+      };
+      
+      reader.readAsText(file);
+    }
+
+    function resetAllProgress() {
+      if (confirm('Reset progress for ALL users? This cannot be undone!')) {
+        Object.values(allUsers).forEach(user => {
+          if (user.username !== 'Admin') {
+            user.progress = { html: 0, css: 0, js: 0 };
+            user.xp = 0;
+            user.challengesCompleted = {};
+            user.totalCourseTime = 0;
+            user.courseTime = { html: 0, css: 0, js: 0 };
+          }
+        });
+        
+        localStorage.setItem('codex_users', JSON.stringify(allUsers));
+        alert('All user progress reset!');
+        initializeAdminDashboard();
+      }
+    }
+
+    function createTestUsers() {
+      const testUsers = [
+        { username: 'TestUser1', progress: { html: 10, css: 5, js: 2 }, xp: 170 },
+        { username: 'TestUser2', progress: { html: 20, css: 15, js: 10 }, xp: 450 },
+        { username: 'TestUser3', progress: { html: 5, css: 5, js: 5 }, xp: 150 },
+        { username: 'Beginner', progress: { html: 2, css: 1, js: 0 }, xp: 30 },
+        { username: 'ProCoder', progress: { html: 20, css: 20, js: 20 }, xp: 600 },
+        { username: 'Designer', progress: { html: 15, css: 18, js: 5 }, xp: 380 },
+        { username: 'Developer', progress: { html: 18, css: 12, js: 15 }, xp: 450 },
+        { username: 'Student', progress: { html: 8, css: 6, js: 4 }, xp: 180 }
+      ];
+      
+      testUsers.forEach(testUser => {
+        const userKey = testUser.username.toLowerCase();
+        if (!allUsers[userKey]) {
+          allUsers[userKey] = {
+            username: testUser.username,
+            password: 'test123',
+            isAdmin: false,
+            progress: testUser.progress,
+            xp: testUser.xp,
+            loginCount: Math.floor(Math.random() * 20) + 1,
+            totalCourseTime: Math.floor(Math.random() * 10000) + 3600,
+            courseTime: {
+              html: Math.floor(Math.random() * 3000),
+              css: Math.floor(Math.random() * 3000),
+              js: Math.floor(Math.random() * 3000)
+            },
+            loginDates: Array.from({length: Math.floor(Math.random() * 10) + 1}, () => 
+              new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
+            ),
+            challengesCompleted: { 
+              html: testUser.progress.html >= 5 ? [5, 10, 15] : [],
+              css: testUser.progress.css >= 5 ? [5, 10] : [],
+              js: testUser.progress.js >= 5 ? [5] : []
+            },
+            createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
+            lastLogin: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString()
+          };
+        }
+      });
+      
+      localStorage.setItem('codex_users', JSON.stringify(allUsers));
+      alert('Test users created!');
+      initializeAdminDashboard();
+    }
+
+    function fixDataIssues() {
+      let fixed = 0;
+      
+      Object.values(allUsers).forEach(user => {
+        // Fix missing properties
+        if (!user.progress) {
+          user.progress = { html: 0, css: 0, js: 0 };
+          fixed++;
+        }
+        if (!user.xp && user.xp !== 0) {
+          user.xp = 0;
+          fixed++;
+        }
+        if (!user.challengesCompleted) {
+          user.challengesCompleted = {};
+          fixed++;
+        }
+        if (!user.loginCount) {
+          user.loginCount = 1;
+          fixed++;
+        }
+        if (!user.courseTime) {
+          user.courseTime = { html: 0, css: 0, js: 0 };
+          fixed++;
+        }
+      });
+      
+      localStorage.setItem('codex_users', JSON.stringify(allUsers));
+      alert(`Fixed ${fixed} data issues!`);
+      initializeAdminDashboard();
+    }
+
+    function clearCache() {
+      localStorage.removeItem('codex_session_start');
+      localStorage.removeItem('codex_theme');
+      alert('Cache cleared!');
+    }
+
+    function generateSampleLevels() {
+      // Add 10 sample levels to each category if they don't exist
+      ['html', 'css', 'js'].forEach(lang => {
+        if (!window.levels[lang] || window.levels[lang].length === 0) {
+          window.levels[lang] = [];
+          
+          for (let i = 1; i <= 10; i++) {
+            window.levels[lang].push({
+              title: `Sample ${lang.toUpperCase()} Level ${i}`,
+              template: lang === 'html' ? 
+                `<!DOCTYPE html>\n<html>\n<head>\n  <title>Sample HTML ${i}</title>\n</head>\n<body>\n  <!-- Sample content ${i} -->\n</body>\n</html>` :
+                lang === 'css' ? 
+                `/* Sample CSS ${i} */\nbody {\n  /* Your styles ${i} */\n}` :
+                `// Sample JavaScript ${i}\nconsole.log("Sample ${i}");`,
+              instruction: `Complete sample level ${i} for ${lang.toUpperCase()}.`,
+              check: /.*/,
+              difficulty: i <= 3 ? 'beginner' : i <= 7 ? 'intermediate' : 'advanced',
+              tags: lang,
+              isChallenge: i === 10
+            });
+          }
+        }
+      });
+      
+      alert('Sample levels generated!');
+      updateLevelCounts();
+      populateLevelSelector();
+      updateLevelList();
+    }
+
+    function validateAllLevels() {
+      let errors = [];
+      let warnings = [];
+      
+      ['html', 'css', 'js'].forEach(lang => {
+        const levels = window.levels[lang] || [];
+        
+        levels.forEach((level, index) => {
+          // Check for missing properties
+          if (!level.title) warnings.push(`${lang.toUpperCase()} Level ${index + 1}: Missing title`);
+          if (!level.instruction) warnings.push(`${lang.toUpperCase()} Level ${index + 1}: Missing instruction`);
+          if (!level.template) errors.push(`${lang.toUpperCase()} Level ${index + 1}: Missing template`);
+          
+          // Check regex
+          if (level.check) {
+            try {
+              new RegExp(level.check.source || level.check);
+            } catch (e) {
+              errors.push(`${lang.toUpperCase()} Level ${index + 1}: Invalid regex - ${e.message}`);
+            }
+          }
+        });
+      });
+      
+      let message = `Validation Complete:\n\n`;
+      
+      if (errors.length === 0 && warnings.length === 0) {
+        message += `✅ All levels are valid!`;
+      } else {
+        if (errors.length > 0) {
+          message += `❌ Errors (${errors.length}):\n${errors.join('\n')}\n\n`;
+        }
+        if (warnings.length > 0) {
+          message += `⚠️ Warnings (${warnings.length}):\n${warnings.join('\n')}`;
+        }
+      }
+      
+      alert(message);
+    }
+
+    function clearAllData() {
+      if (confirm('⚠️ CLEAR ALL DATA?\n\nThis will delete EVERYTHING:\n- All user accounts\n- All progress\n- All levels\n- All settings\n\nThis action cannot be undone!')) {
+        localStorage.clear();
+        alert('All data cleared! Redirecting to login...');
+        setTimeout(() => {
+          window.location.href = 'LandX.html';
+        }, 1000);
+      }
+    }
+
+    function deleteAllUsers() {
+      if (confirm('Delete ALL users except admin?\nThis cannot be undone!')) {
+        const adminUser = allUsers['admin'];
+        localStorage.setItem('codex_users', JSON.stringify({ admin: adminUser }));
+        alert('All users deleted!');
+        initializeAdminDashboard();
+      }
+    }
+
+    function resetEverything() {
+      if (confirm('⚠️ NUCLEAR OPTION!\n\nReset EVERYTHING to factory defaults?\nThis will:\n- Delete all users\n- Reset all levels\n- Clear all data\n- Reload the page\n\nThis action cannot be undone!')) {
+        localStorage.clear();
+        // Reload the page to get fresh levels
+        location.reload();
+      }
+    }
+
+    function deleteAllLevels() {
+      if (confirm('Delete ALL levels from all categories?\nThis cannot be undone!')) {
+        window.levels = { html: [], css: [], js: [] };
+        alert('All levels deleted!');
+        updateLevelCounts();
+        populateLevelSelector();
+        updateLevelList();
+      }
+    }
+
+    function createNewUser() {
+      const username = prompt('Enter new username:');
+      if (!username) return;
+      
+      if (allUsers[username.toLowerCase()]) {
+        alert('Username already exists!');
+        return;
+      }
+      
+      const password = prompt('Enter password for new user:');
+      if (!password) return;
+      
+      const isAdmin = confirm('Make this user an admin?');
+      
+      allUsers[username.toLowerCase()] = {
+        username: username,
+        password: password,
+        isAdmin: isAdmin,
+        progress: { html: 0, css: 0, js: 0 },
+        xp: 0,
+        loginCount: 0,
+        totalCourseTime: 0,
+        courseTime: { html: 0, css: 0, js: 0 },
+        loginDates: [],
+        challengesCompleted: {},
+        createdAt: new Date().toISOString(),
+        lastLogin: null
+      };
+      
+      localStorage.setItem('codex_users', JSON.stringify(allUsers));
+      alert(`User "${username}" created successfully!${isAdmin ? ' (Admin privileges granted)' : ''}`);
+      initializeAdminDashboard();
+    }
+
+    function importUsers() {
+      alert('User import functionality would open file picker to import user data.');
+    }
+
+    function refreshDashboard() {
+      initializeAdminDashboard();
+      alert('Dashboard refreshed!');
+    }
+
+    function generateLevelReport() {
+      let report = `Code-X Pro Level Report\n`;
+      report += `Generated: ${new Date().toLocaleString()}\n`;
+      report += `================================\n\n`;
+      
+      ['html', 'css', 'js'].forEach(lang => {
+        const levels = window.levels[lang] || [];
+        report += `${lang.toUpperCase()} Levels: ${levels.length}\n`;
+        
+        // Count by difficulty
+        const difficultyCount = { beginner: 0, intermediate: 0, advanced: 0, expert: 0 };
+        let challengeCount = 0;
+        
+        levels.forEach(level => {
+          const difficulty = level.difficulty || 'beginner';
+          difficultyCount[difficulty] = (difficultyCount[difficulty] || 0) + 1;
+          if (level.isChallenge) challengeCount++;
+        });
+        
+        report += `  Difficulty: Beginner ${difficultyCount.beginner}, Intermediate ${difficultyCount.intermediate}, Advanced ${difficultyCount.advanced}, Expert ${difficultyCount.expert}\n`;
+        report += `  Challenges: ${challengeCount}\n\n`;
+      });
+      
+      // Create download
+      const blob = new Blob([report], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `level-report-${new Date().toISOString().slice(0,10)}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function checkSystemHealth() {
+      const healthChecks = [
+        { name: 'Local Storage', status: typeof localStorage !== 'undefined', message: 'Local storage is available' },
+        { name: 'Users Data', status: allUsers && Object.keys(allUsers).length > 0, message: 'User data loaded' },
+        { name: 'Levels Data', status: window.levels && Object.keys(window.levels).length > 0, message: 'Levels data loaded' },
+        { name: 'Admin Account', status: currentAdmin && currentAdmin.isAdmin, message: 'Admin session active' }
+      ];
+      
+      const failedChecks = healthChecks.filter(check => !check.status);
+      
+      if (failedChecks.length === 0) {
+        alert('✅ System Health: ALL CHECKS PASSED\n\nSystem is functioning normally.');
+      } else {
+        let message = '❌ System Health Issues:\n\n';
+        failedChecks.forEach(check => {
+          message += `• ${check.name}: FAILED\n`;
+        });
+        message += '\nPlease check your system configuration.';
+        alert(message);
+      }
+    }
+
+    // Tab switching
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active from all tab buttons
+      document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(`${tabName}Tab`).classList.add('active');
+      
+      // Activate tab button
+      event.target.classList.add('active');
+      
+      // Load analytics if needed
+      if (tabName === 'analytics') {
+        loadAnalytics();
+      }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Logout button
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        if (confirm('Logout from admin panel?')) {
+          localStorage.removeItem('codex_session_start');
+          window.location.href = 'LandX.html';
+        }
+      });
+      
+      // User search
+      document.getElementById('userSearch').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        filteredUsers = Object.values(allUsers)
+          .filter(u => u.username !== 'Admin')
+          .filter(u => 
+            u.username.toLowerCase().includes(searchTerm) ||
+            (u.email && u.email.toLowerCase().includes(searchTerm))
+          );
+        updateUserList();
+      });
+      
+      // Level search
+      document.getElementById('levelSearch').addEventListener('input', function() {
+        updateLevelList();
+      });
+      
+      // Level category filter
+      document.getElementById('levelCategory').addEventListener('change', function() {
+        updateLevelList();
+      });
+      
+      // Level language change
+      document.getElementById('levelLang').addEventListener('change', function() {
+        currentLevelPage = 1;
+        populateLevelSelector();
+        loadLevelForEdit();
+      });
+    }
+
+    // Load levels when ready
+    window.addEventListener('load', function() {
+      if (window.levels) {
+        // Already loaded by levels.js
+      }
+    });
+  </script>
+</body>
+</html>

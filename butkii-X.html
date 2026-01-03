@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Butkii's Special Coding Journey 💕</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+ <link rel="stylesheet" href="style-b.css" />
+</head>
+<body class="dark-mode love-mode">
+  <!-- Check if user is butkii -->
+  <div id="authCheck" class="hidden">
+    <div class="auth-message">
+      <h2>💕 Special Access Only</h2>
+      <p>This page is specially made for butkii only!</p>
+      <button onclick="window.location.href='LandX.html'" class="btn-primary">
+        Go to Login
+      </button>
+    </div>
+  </div>
+
+  <!-- BUTKII'S SPECIAL APP -->
+  <div id="app" class="container hidden">
+    <nav class="navbar love-navbar">
+      <div class="logo">butkii<span style="color: #ff3366;">💕</span>Code</div>
+      <div class="nav-right">
+        <div class="user-info">
+          <span id="userName">butkii</span>
+          <span class="love-badge">💖 Special</span>
+          <span class="level">Lvl <span id="level">1</span></span>
+          <span class="xp"><span id="xp">0</span> XP</span>
+        </div>
+        <button id="loveBtn" class="btn-icon" title="Send Love">💕</button>
+        <button id="themeBtn" class="btn-icon" title="Toggle Theme">🌙</button>
+        <button id="logoutBtn" class="btn-outline">Logout</button>
+      </div>
+    </nav>
+
+    <main id="dashboard" class="dashboard">
+      <div class="love-welcome">
+        <h1>Welcome back, butkii! 💕</h1>
+        <div class="love-message" id="dailyMessage">
+          Loading your special message...
+        </div>
+        <button class="motivation-btn" onclick="showMotivation()">
+          💖 Get Motivated!
+        </button>
+      </div>
+
+      <div class="love-stats" id="loveStats">
+        <!-- Love stats will be loaded here -->
+      </div>
+
+      <div class="motivation-box">
+        <h3>💌 Today's Special Message</h3>
+        <div class="motivation-text" id="motivationText">
+          You're going to do amazing today! I believe in you! 🌟
+        </div>
+        <button class="motivation-btn" onclick="newMotivation()">
+          🔄 New Motivation
+        </button>
+      </div>
+
+      <h2 class="subtitle" style="color: #ff3366; text-align: center;">Choose what to learn today 💕</h2>
+      
+      <div class="modules-grid">
+        <div class="love-module-card" onclick="openModule('html')">
+          <div class="icon">💝 HTML</div>
+          <h3>HTML</h3>
+          <div class="love-progress"><div id="htmlBar" class="love-progress-fill"></div></div>
+          <p><span id="htmlDone">0</span>/20 Levels</p>
+          <small style="color: #ffb6c1;">Build beautiful pages 💕</small>
+        </div>
+        <div class="love-module-card" onclick="openModule('css')">
+          <div class="icon">🎨 CSS</div>
+          <h3>CSS</h3>
+          <div class="love-progress"><div id="cssBar" class="love-progress-fill"></div></div>
+          <p><span id="cssDone">0</span>/20 Levels</p>
+          <small style="color: #ffb6c1;">Style with love 💖</small>
+        </div>
+        <div class="love-module-card" onclick="openModule('js')">
+          <div class="icon">✨ JS</div>
+          <h3>JavaScript</h3>
+          <div class="love-progress"><div id="jsBar" class="love-progress-fill"></div></div>
+          <p><span id="jsDone">0</span>/20 Levels</p>
+          <small style="color: #ffb6c1;">Make magic happen 🌟</small>
+        </div>
+      </div>
+
+      <div style="margin-top: 50px;">
+        <h3 style="color: #ff3366; text-align: center; margin-bottom: 20px;">🏆 Your Love Achievements</h3>
+        <div class="achievements-grid" id="achievementsGrid">
+          <!-- Achievements will be loaded here -->
+        </div>
+      </div>
+    </main>
+
+    <div id="editor" class="editor love-editor hidden">
+      <div class="editor-nav">
+        <button onclick="closeEditor()" class="back-btn" style="color: #ff3366;">← Back</button>
+        <h2 id="title" style="color: #ff3366;">HTML Level 1 💕</h2>
+        <div class="badges">
+          <span class="badge" style="background: rgba(255, 51, 102, 0.2); color: #ff3366;">Level <span id="currentLevelNum">1</span></span>
+          <span class="badge" id="xpBadge" style="background: linear-gradient(45deg, #ff3366, #ff6b8b); color: white;">+15 XP</span>
+        </div>
+      </div>
+
+      <div class="toolbar love-toolbar">
+        <button data-s="&lt;">&lt;</button>
+        <button data-s="&gt;">&gt;</button>
+        <button data-s="/">/</button>
+        <button data-s="=">=</button>
+        <button data-s="&quot;">"</button>
+        <button data-s="'">'</button>
+        <button data-s="&lt;3">❤️</button>
+        <button data-s=":)">😊</button>
+        <button data-s=":D">😄</button>
+        <button data-s="<3">💕</button>
+        <button data-s="*">⭐</button>
+        <button data-s="~">🌟</button>
+      </div>
+
+      <div class="split-view">
+        <textarea id="code" spellcheck="false" style="background: #000; color: #ff6b8b;"></textarea>
+        <div class="preview">
+          <div class="preview-bar" style="background: #ff3366;">Live Preview 💕</div>
+          <iframe id="preview"></iframe>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="runBtn" class="btn-primary love-btn-primary">Run</button>
+        <button id="checkBtn" class="btn-success love-btn-success">Check Solution 💖</button>
+        <button id="hintBtn" class="btn-outline" style="border-color: #ff3366; color: #ff3366;">Hint</button>
+        <button id="nextBtn" class="btn-next" disabled style="background: #ff3366;">Next Level →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let currentUser = null;
+    let currentLang = "html";
+    let currentLevel = 0;
+    let courseTimer = null;
+    let sessionStartTime = null;
+    
+    // Motivational messages for butkii
+    const loveMessages = [
+      "You're the most amazing coder I know! 💕",
+      "I believe in you more than anything! 🌟",
+      "You make my heart happy when you code! 💖",
+      "You're unstoppable, Butkii! 🚀",
+      "Every line you write is beautiful! ✨",
+      "I'm so proud of you, always! 🏆",
+      "You're my coding superstar! ⭐",
+      "Love you to the moon and back! 🌙",
+      "You're doing fantastic, butkii! 🎯",
+      "You make programming look easy! 💻"
+    ];
+    
+    const dailyMessages = [
+      "Today is going to be amazing! I can feel it! 🌈",
+      "You're going to learn so much today! 📚",
+      "I can't wait to see what you create today! 🎨",
+      "Remember to take breaks and drink water! 💧",
+      "You're smarter than you think! Trust yourself! 🧠",
+      "Every challenge makes you stronger! 💪",
+      "You're growing every single day! 🌱",
+      "I'm always here cheering for you! 📣",
+      "You inspire me every day! ✨",
+      "Today's the day you'll shine brightest! ☀️"
+    ];
+    
+    // Initialize floating hearts
+    function createFloatingHearts() {
+      const heartEmojis = ['💕', '💖', '💗', '💓', '💘', '💝', '💞', '❤️', '🧡', '💛', '💚', '💙', '💜'];
+      
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'floating-heart';
+          heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+          heart.style.left = Math.random() * 100 + 'vw';
+          heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+          heart.style.animationDuration = (Math.random() * 10 + 20) + 's';
+          heart.style.animationDelay = Math.random() * 5 + 's';
+          document.body.appendChild(heart);
+          
+          // Remove heart after animation
+          setTimeout(() => {
+            if (heart.parentNode) {
+              heart.remove();
+            }
+          }, 30000);
+        }, i * 500);
+      }
+    }
+    
+    // Show motivational message
+    function showMotivation() {
+      const randomMessage = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+      
+      // Heart explosion
+      confetti({
+        particleCount: 200,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#ff3366', '#ff6b8b', '#ff99aa'],
+        shapes: ['heart', 'circle']
+      });
+      
+      // Show message
+      const messageDiv = document.createElement('div');
+      messageDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(45deg, #ff3366, #ff6b8b);
+        color: white;
+        padding: 25px 40px;
+        border-radius: 25px;
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-align: center;
+        z-index: 3000;
+        box-shadow: 0 15px 40px rgba(255, 51, 102, 0.6);
+        animation: floatUp 4s ease-in-out forwards;
+      `;
+      messageDiv.innerHTML = `
+        ${randomMessage}
+        <div style="font-size: 3rem; margin-top: 15px;">💖🌟💕</div>
+      `;
+      
+      document.body.appendChild(messageDiv);
+      
+      // Remove after animation
+      setTimeout(() => {
+        messageDiv.remove();
+      }, 4000);
+    }
+    
+    // New motivation
+    function newMotivation() {
+      const randomMessage = dailyMessages[Math.floor(Math.random() * dailyMessages.length)];
+      document.getElementById('motivationText').textContent = randomMessage;
+      
+      // Small heart confetti
+      confetti({
+        particleCount: 50,
+        spread: 70,
+        origin: { y: 0.3 },
+        colors: ['#ff3366'],
+        shapes: ['heart']
+      });
+    }
+    
+    // Send love
+    function sendLove() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff3366', '#ff6b8b'],
+        shapes: ['heart']
+      });
+      
+      alert('💖 Love sent to butkii! You\'re amazing! 💕');
+    }
+    
+    // Check if user is butkii
+    document.addEventListener('DOMContentLoaded', function() {
+      const userData = localStorage.getItem('codex_current_user');
+      const authCheck = document.getElementById('authCheck');
+      const app = document.getElementById('app');
+      
+      if (!userData) {
+        authCheck.classList.remove('hidden');
+        app.classList.add('hidden');
+        return;
+      }
+      
+      try {
+        currentUser = JSON.parse(userData);
+        
+        if (!currentUser.isSpecial) {
+          authCheck.classList.remove('hidden');
+          app.classList.add('hidden');
+          return;
+        }
+        
+        // User is butkii - show special app
+        authCheck.classList.add('hidden');
+        app.classList.remove('hidden');
+        
+        // Load user data
+        document.getElementById('userName').textContent = currentUser.username;
+        
+        // Initialize
+        updateUI();
+        setupEventListeners();
+        initCourseTimer();
+        createFloatingHearts();
+        
+        // Set daily message
+        const randomDaily = dailyMessages[Math.floor(Math.random() * dailyMessages.length)];
+        document.getElementById('dailyMessage').textContent = randomDaily;
+        
+        // Load love stats
+        updateLoveStats();
+        
+        // Initial motivation
+        setTimeout(() => {
+          showMotivation();
+        }, 1000);
+        
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        authCheck.classList.remove('hidden');
+        app.classList.add('hidden');
+      }
+    });
+    
+    // Update love stats
+    function updateLoveStats() {
+      const totalProgress = (currentUser.progress.html || 0) + (currentUser.progress.css || 0) + (currentUser.progress.js || 0);
+      const progressPercent = Math.round((totalProgress / 60) * 100);
+      const challengesCompleted = Object.values(currentUser.challengesCompleted || {}).reduce((sum, arr) => sum + arr.length, 0);
+      const totalTime = currentUser.totalCourseTime || 0;
+      const hours = Math.floor(totalTime / 3600);
+      const minutes = Math.floor((totalTime % 3600) / 60);
+      const loveScore = currentUser.loveScore || 1000;
+      
+      document.getElementById('loveStats').innerHTML = `
+        <div class="love-stat-card">
+          <div class="icon">💖</div>
+          <div class="value">${loveScore}</div>
+          <div class="label">Love Score</div>
+        </div>
+        <div class="love-stat-card">
+          <div class="icon">📚</div>
+          <div class="value">${progressPercent}%</div>
+          <div class="label">Progress</div>
+        </div>
+        <div class="love-stat-card">
+          <div class="icon">🏆</div>
+          <div class="value">${challengesCompleted}/12</div>
+          <div class="label">Challenges</div>
+        </div>
+        <div class="love-stat-card">
+          <div class="icon">⏱️</div>
+          <div class="value">${hours}h</div>
+          <div class="label">${minutes}m Learning</div>
+        </div>
+      `;
+      
+      // Update achievements
+      updateAchievements();
+    }
+    
+    // Update achievements
+    function updateAchievements() {
+      const achievements = [
+        { icon: '💕', name: 'First Login', desc: 'Started the journey', earned: true },
+        { icon: '🌟', name: 'First Level', desc: 'Completed level 1', earned: (currentUser.progress.html + currentUser.progress.css + currentUser.progress.js) > 0 },
+        { icon: '🏆', name: 'HTML Starter', desc: '5 HTML levels', earned: (currentUser.progress.html || 0) >= 5 },
+        { icon: '🎨', name: 'CSS Artist', desc: '5 CSS levels', earned: (currentUser.progress.css || 0) >= 5 },
+        { icon: '✨', name: 'JS Wizard', desc: '5 JS levels', earned: (currentUser.progress.js || 0) >= 5 },
+        { icon: '💖', name: 'Love Coder', desc: '1000 love score', earned: (currentUser.loveScore || 0) >= 1000 },
+        { icon: '🚀', name: 'Fast Learner', desc: '1 hour learning', earned: (currentUser.totalCourseTime || 0) >= 3600 },
+        { icon: '⭐', name: 'Challenge Master', desc: 'First challenge', earned: Object.values(currentUser.challengesCompleted || {}).reduce((s, a) => s + a.length, 0) > 0 }
+      ];
+      
+      document.getElementById('achievementsGrid').innerHTML = achievements.map(ach => `
+        <div class="achievement-badge" style="opacity: ${ach.earned ? '1' : '0.5'}">
+          <div class="badge-icon">${ach.icon}</div>
+          <div class="badge-name">${ach.name}</div>
+          <div class="badge-desc">${ach.desc}</div>
+          <small style="color: ${ach.earned ? '#ff3366' : '#ffb6c1'}">${ach.earned ? '✅ Earned' : '🔒 Locked'}</small>
+        </div>
+      `).join('');
+    }
+    
+    // Module functions
+    function openModule(lang) {
+      currentLang = lang;
+      currentLevel = currentUser.progress[lang] || 0;
+      
+      if (currentLevel >= 20) currentLevel = 19;
+      
+      loadLevel();
+      document.getElementById("dashboard").classList.add("hidden");
+      document.getElementById("editor").classList.remove("hidden");
+    }
+    
+    function closeEditor() {
+      document.getElementById("editor").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+      updateUI();
+      updateLoveStats();
+    }
+    
+    function loadLevel() {
+      if (!window.levels || !window.levels[currentLang]) return;
+      
+      const lvl = window.levels[currentLang][currentLevel];
+      if (!lvl) return;
+      
+      document.getElementById("title").textContent = `${currentLang.toUpperCase()} • ${lvl.title} 💕`;
+      document.getElementById("currentLevelNum").textContent = currentLevel + 1;
+      
+      // Show template or instruction
+      if (lvl.template) {
+        document.getElementById("code").value = lvl.template;
+      } else if (lvl.instruction) {
+        document.getElementById("code").value = `// ${lvl.instruction}\n// You can do this butkii! 💖\n\n`;
+      } else {
+        document.getElementById("code").value = "";
+      }
+      
+      // Disable next button until level is completed
+      const nextBtn = document.getElementById("nextBtn");
+      const isCompleted = currentUser.progress[currentLang] > currentLevel;
+      nextBtn.disabled = !isCompleted;
+      
+      runCode();
+    }
+    
+    function runCode() {
+      const code = document.getElementById("code").value;
+      const iframe = document.getElementById("preview");
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      
+      iframeDoc.open();
+      iframeDoc.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              body {
+                background: linear-gradient(135deg, #1a0a0a, #2a0a1a);
+                color: #ffb6c1;
+                font-family: Arial, sans-serif;
+                padding: 20px;
+                min-height: 100vh;
+              }
+              .love-message {
+                color: #ff3366;
+                font-size: 1.2em;
+                margin: 10px 0;
+              }
+              .heart {
+                color: #ff6b8b;
+                font-size: 2em;
+                animation: heartbeat 1.5s infinite;
+              }
+              @keyframes heartbeat {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+              }
+            </style>
+          </head>
+          <body>
+            ${code}
+            <script>
+              // Add special butkii touch
+              document.addEventListener('click', function() {
+                console.log('butkii is coding! 💕');
+              });
+            <\/script>
+          </body>
+        </html>
+      `);
+      iframeDoc.close();
+    }
+    
+    function checkSolution() {
+      const code = document.getElementById("code").value;
+      
+      // Check if level is already completed
+      if (currentUser.progress[currentLang] > currentLevel) {
+        alert("🎉 You already completed this level! Great job butkii! 💕");
+        return;
+      }
+      
+      // Simple validation for HTML
+      if (currentLang === "html") {
+        if (currentLevel === 0 && code.includes("<h1>") && code.includes("</h1>")) {
+          completeLevel();
+        } else if (currentLevel === 1 && code.includes("<p>") && code.includes("</p>")) {
+          completeLevel();
+        } else {
+          alert("💖 Try again, Butkii! You're so close! Check the hint for help.");
+        }
+      } 
+      // Simple validation for CSS
+      else if (currentLang === "css") {
+        if (currentLevel === 0 && code.includes("color:") && (code.includes("red") || code.includes("#ff3366"))) {
+          completeLevel();
+        } else {
+          alert("💖 Almost there! Remember to use proper CSS syntax.");
+        }
+      }
+      // Simple validation for JS
+      else if (currentLang === "js") {
+        if (currentLevel === 0 && code.includes("console.log") && code.includes("butkii")) {
+          completeLevel();
+        } else {
+          alert("💖 You can do it! Try using console.log() to print a message!");
+        }
+      }
+    }
+    
+    function completeLevel() {
+      // Update progress
+      if (!currentUser.progress[currentLang] || currentUser.progress[currentLang] <= currentLevel) {
+        currentUser.progress[currentLang] = currentLevel + 1;
+      }
+      
+      // Add XP
+      currentUser.xp = (currentUser.xp || 0) + 15;
+      currentUser.loveScore = (currentUser.loveScore || 1000) + 50;
+      
+      // Save user data
+      localStorage.setItem('codex_current_user', JSON.stringify(currentUser));
+      
+      // Celebrate!
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff3366', '#ff6b8b', '#ff99aa'],
+        shapes: ['heart']
+      });
+      
+      // Show success message
+      const successDiv = document.createElement('div');
+      successDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(45deg, #ff3366, #ff6b8b);
+        color: white;
+        padding: 30px 50px;
+        border-radius: 25px;
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        z-index: 3000;
+        box-shadow: 0 20px 50px rgba(255, 51, 102, 0.7);
+      `;
+      successDiv.innerHTML = `
+        🎉 Level Complete! 🎉<br>
+        <div style="font-size: 1.5rem; margin-top: 15px;">You earned 15 XP and 50 Love Points! 💖</div>
+        <div style="font-size: 3rem; margin-top: 20px;">🌟💕✨</div>
+      `;
+      
+      document.body.appendChild(successDiv);
+      
+      setTimeout(() => {
+        successDiv.remove();
+        document.getElementById("nextBtn").disabled = false;
+        updateUI();
+      }, 3000);
+    }
+    
+    function nextLevel() {
+      if (currentLevel < 19) {
+        currentLevel++;
+        loadLevel();
+      } else {
+        alert("🏆 You've completed all levels! You're amazing butkii! 💕");
+        closeEditor();
+      }
+    }
+    
+    function showHint() {
+      const hints = {
+        html: [
+          "Try using <h1>Hello butkii!</h1>",
+          "Wrap text with <p> tags to create paragraphs",
+          "Use <br> for line breaks",
+          "Add style with style='color: #ff3366'",
+          "Images use <img src='...'>"
+        ],
+        css: [
+          "Select elements with element { }",
+          "Change color with color: #ff3366",
+          "Add space with margin and padding",
+          "Make it round with border-radius: 50%",
+          "Animate with @keyframes"
+        ],
+        js: [
+          "Use console.log('Hello butkii!')",
+          "Variables: let name = 'butkii'",
+          "Functions: function sayHello() { }",
+          "Events: element.addEventListener('click', ...)",
+          "Loops: for (let i = 0; i < 10; i++)"
+        ]
+      };
+      
+      const hint = hints[currentLang][currentLevel % hints[currentLang].length];
+      alert(`💡 Hint: ${hint}\n\nRemember, you're doing amazing! 💕`);
+    }
+    
+    function updateUI() {
+      // Update progress bars
+      const htmlProgress = currentUser.progress.html || 0;
+      const cssProgress = currentUser.progress.css || 0;
+      const jsProgress = currentUser.progress.js || 0;
+      
+      document.getElementById('htmlDone').textContent = htmlProgress;
+      document.getElementById('cssDone').textContent = cssProgress;
+      document.getElementById('jsDone').textContent = jsProgress;
+      
+      document.getElementById('htmlBar').style.width = `${(htmlProgress / 20) * 100}%`;
+      document.getElementById('cssBar').style.width = `${(cssProgress / 20) * 100}%`;
+      document.getElementById('jsBar').style.width = `${(jsProgress / 20) * 100}%`;
+      
+      // Update level and XP
+      const totalLevels = htmlProgress + cssProgress + jsProgress;
+      const userLevel = Math.floor(totalLevels / 5) + 1;
+      document.getElementById('level').textContent = userLevel;
+      document.getElementById('xp').textContent = currentUser.xp || 0;
+    }
+    
+    function setupEventListeners() {
+      // Run button
+      document.getElementById('runBtn').addEventListener('click', runCode);
+      
+      // Check solution button
+      document.getElementById('checkBtn').addEventListener('click', checkSolution);
+      
+      // Hint button
+      document.getElementById('hintBtn').addEventListener('click', showHint);
+      
+      // Next level button
+      document.getElementById('nextBtn').addEventListener('click', nextLevel);
+      
+      // Love button
+      document.getElementById('loveBtn').addEventListener('click', sendLove);
+      
+      // Logout button
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('codex_current_user');
+        window.location.href = 'LandX.html';
+      });
+      
+      // Theme toggle
+      document.getElementById('themeBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        document.body.classList.toggle('light-mode');
+      });
+      
+      // Toolbar buttons
+      document.querySelectorAll('.toolbar button').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const textarea = document.getElementById('code');
+          const start = textarea.selectionStart;
+          const end = textarea.selectionEnd;
+          const text = textarea.value;
+          const insert = this.getAttribute('data-s');
+          
+          textarea.value = text.substring(0, start) + insert + text.substring(end);
+          textarea.focus();
+          textarea.selectionStart = textarea.selectionEnd = start + insert.length;
+          runCode();
+        });
+      });
+      
+      // Auto-run on code change
+      document.getElementById('code').addEventListener('input', function() {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(runCode, 500);
+      });
+    }
+    
+    function initCourseTimer() {
+      sessionStartTime = Date.now();
+      
+      courseTimer = setInterval(function() {
+        if (sessionStartTime) {
+          const sessionTime = Math.floor((Date.now() - sessionStartTime) / 1000);
+          
+          // Update total course time every minute
+          if (sessionTime % 60 === 0) {
+            currentUser.totalCourseTime = (currentUser.totalCourseTime || 0) + 60;
+            localStorage.setItem('codex_current_user', JSON.stringify(currentUser));
+            updateLoveStats();
+          }
+        }
+      }, 1000);
+    }
+    
+    // Add CSS for floatUp animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes floatUp {
+        0% { opacity: 0; transform: translate(-50%, -40%); }
+        20% { opacity: 1; transform: translate(-50%, -50%); }
+        80% { opacity: 1; transform: translate(-50%, -50%); }
+        100% { opacity: 0; transform: translate(-50%, -60%); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Add sample levels if not defined
+    if (!window.levels) {
+      window.levels = {
+        html: [
+          { title: "First HTML", template: "<h1>Hello butkii! 💕</h1>\n<p>Welcome to your special coding journey!</p>" },
+          { title: "Paragraphs", instruction: "Create two paragraphs with <p> tags" },
+          { title: "Lists", instruction: "Make an ordered list with <ol> and <li>" },
+          { title: "Images", instruction: "Add an image with <img src='...'>" },
+          { title: "Links", instruction: "Create a link with <a href='...'>" },
+          { title: "Divs", instruction: "Use <div> to group elements" },
+          { title: "Spans", instruction: "Use <span> for inline styling" },
+          { title: "Tables", instruction: "Create a simple table" },
+          { title: "Forms", instruction: "Make a form with input fields" },
+          { title: "Semantic HTML", instruction: "Use semantic tags like <header>, <main>, <footer>" }
+        ],
+        css: [
+          { title: "First CSS", template: "h1 {\n  color: #ff3366;\n  text-align: center;\n}" },
+          { title: "Colors", instruction: "Style elements with different colors" },
+          { title: "Fonts", instruction: "Change font family and size" },
+          { title: "Margin & Padding", instruction: "Add space around elements" },
+          { title: "Borders", instruction: "Add borders to elements" },
+          { title: "Backgrounds", instruction: "Style element backgrounds" },
+          { title: "Flexbox", instruction: "Use display: flex for layout" },
+          { title: "Grid", instruction: "Use CSS Grid for layout" },
+          { title: "Animations", instruction: "Create simple animations" },
+          { title: "Responsive", instruction: "Use media queries for mobile" }
+        ],
+        js: [
+          { title: "First JS", template: "console.log('I love you butkii! 💕');\nalert('You\\'re amazing!');" },
+          { title: "Variables", instruction: "Declare and use variables" },
+          { title: "Functions", instruction: "Create and call functions" },
+          { title: "Conditions", instruction: "Use if/else statements" },
+          { title: "Loops", instruction: "Use for and while loops" },
+          { title: "Arrays", instruction: "Create and manipulate arrays" },
+          { title: "Objects", instruction: "Create JavaScript objects" },
+          { title: "DOM", instruction: "Manipulate the webpage" },
+          { title: "Events", instruction: "Handle user interactions" },
+          { title: "APIs", instruction: "Fetch data from an API" }
+        ]
+      };
+    }
+  </script>
+</body>
+</html>
