@@ -14,7 +14,7 @@
     <div class="auth-message">
       <h2>Access Restricted</h2>
       <p>Please login first to access the coding platform.</p>
-      <button onclick="window.location.href='LandX.html'" class="btn-primary">
+      <button onclick="window.location.href='index.html'" class="btn-primary">
         Go to Login
       </button>
     </div>
@@ -648,7 +648,7 @@ function setupEventListeners() {
   document.getElementById('logoutBtn').addEventListener('click', function() {
     if (confirm('Are you sure you want to logout?')) {
       localStorage.removeItem('codex_current_user');
-      window.location.href = 'LandX.html';
+      window.location.href = 'index.html';
     }
   });
   
@@ -743,7 +743,7 @@ setTimeout(function() {
     logoutBtn.addEventListener('click', function() {
       if (confirm('Are you sure you want to logout?')) {
         localStorage.removeItem('codex_current_user');
-        window.location.href = 'LandX.html';
+        window.location.href = 'index.html';
       }
     });
   }
@@ -753,4 +753,5 @@ setTimeout(function() {
   <script src="levels.js"></script>
   
 </body>
+
 </html>
